@@ -1,0 +1,5 @@
+Would remove: /opt/homebrew/Cellar/node/22.0.0 (2,341 files, 78.1MB)
+Would remove: /opt/homebrew/Cellar/openssl@3/3.3.2 (7,718 files, 33.2MB)
+Would remove: /Users/joel/Library/Caches/Homebrew/downloads/abc123--node-22.0.0.bottle_manifest.json (196B)
+Would remove: /Users/joel/Library/Caches/Homebrew/downloads/def456--openssl@3-3.3.2.bottle_manifest.json (225B)
+==> This operation would free approximately 111.3MB of disk space.

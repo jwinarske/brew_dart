@@ -1,0 +1,4 @@
+Error: Refusing to uninstall /opt/homebrew/Cellar/icu4c/76.1
+because it is required by node and php, which are currently installed.
+You can override this and force removal with:
+  brew uninstall --ignore-dependencies icu4c

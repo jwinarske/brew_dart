@@ -78,6 +78,26 @@ class InstallFailedException extends BrewException {
   String toString() => 'InstallFailedException: $packageName\n$stderr';
 }
 
+/// Uninstall or modification refused due to a dependency conflict.
+///
+/// Thrown when brew refuses to uninstall a package because other installed
+/// packages depend on it (e.g. "Refusing to uninstall icu4c because it is
+/// required by node").
+class DependencyConflictException extends BrewException {
+  final String packageName;
+  final List<String> dependents;
+
+  const DependencyConflictException({
+    required this.packageName,
+    required this.dependents,
+  }) : super('cannot remove $packageName: required by ${dependents.join(', ')}');
+
+  @override
+  String toString() =>
+      'DependencyConflictException: $packageName is required by '
+      '${dependents.join(', ')}';
+}
+
 /// A command exceeded its timeout duration.
 class CommandTimeoutException extends BrewException {
   final Duration timeout;

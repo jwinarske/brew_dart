@@ -1,0 +1,7 @@
+Error: No available formula with the name "nonexistent_package_xyz".
+
+==> Searching for a previously deleted formula (in the last month)...
+Warning: No previously deleted formula found.
+
+==> Searching taps on GitHub...
+Warning: No formulae found in taps.

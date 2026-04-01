@@ -1,0 +1,5 @@
+==> Downloading https://ghcr.io/v2/homebrew/core/hello/manifests/2.10
+Already downloaded: /Users/joel/Library/Caches/Homebrew/downloads/abc123--hello-2.10.bottle_manifest.json
+==> Pouring hello--2.10.arm64_sonoma.bottle.tar.gz
+/opt/homebrew/Cellar/hello/2.10: 52 files, 595.0KB
+==> Running `brew cleanup hello`...

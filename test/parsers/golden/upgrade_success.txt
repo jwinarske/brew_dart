@@ -1,0 +1,13 @@
+==> Upgrading node
+  22.0.0 -> 23.11.0
+
+==> Downloading https://ghcr.io/v2/homebrew/core/node/manifests/23.11.0
+Already downloaded: /Users/joel/Library/Caches/Homebrew/downloads/def456--node-23.11.0.bottle_manifest.json
+==> Pouring node--23.11.0.arm64_sonoma.bottle.tar.gz
+==> Caveats
+Bash completion has been installed to:
+  /opt/homebrew/etc/bash_completion.d
+==> Summary
+/opt/homebrew/Cellar/node/23.11.0: 2,475 files, 84.3MB
+==> Running `brew cleanup node`...
+Removing: /opt/homebrew/Cellar/node/22.0.0... (2,341 files, 78.1MB)

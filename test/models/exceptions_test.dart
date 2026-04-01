@@ -72,6 +72,31 @@ void main() {
     });
   });
 
+  group('DependencyConflictException', () {
+    test('includes package name and dependents', () {
+      const e = DependencyConflictException(
+        packageName: 'icu4c',
+        dependents: ['node', 'php'],
+      );
+      expect(e.packageName, 'icu4c');
+      expect(e.dependents, ['node', 'php']);
+      expect(e.message, contains('icu4c'));
+      expect(e.message, contains('node'));
+      expect(e.toString(), contains('DependencyConflictException'));
+      expect(e.toString(), contains('icu4c'));
+      expect(e.toString(), contains('node'));
+      expect(e.toString(), contains('php'));
+    });
+
+    test('single dependent', () {
+      const e = DependencyConflictException(
+        packageName: 'openssl@3',
+        dependents: ['python@3.12'],
+      );
+      expect(e.toString(), contains('python@3.12'));
+    });
+  });
+
   group('CommandTimeoutException', () {
     test('includes timeout and command', () {
       final e = CommandTimeoutException(
