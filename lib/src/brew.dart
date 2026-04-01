@@ -1,10 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'cli/brew_cli.dart';
 import 'cli/brew_process_result.dart';
 import 'exceptions.dart';
-import 'dart:convert';
-
 import 'models/batch_result.dart';
 import 'models/brew_config.dart';
 import 'models/dependency.dart';
@@ -13,12 +12,15 @@ import 'models/installed_package.dart';
 import 'models/outdated_package.dart';
 import 'models/package_info.dart';
 import 'models/search_result.dart';
+import 'models/service.dart';
 import 'models/tap.dart';
+import 'models/update_result.dart';
 import 'parsers/config_parser.dart';
 import 'parsers/doctor_parser.dart';
 import 'parsers/json_v2_parser.dart';
 import 'parsers/list_parser.dart';
 import 'parsers/search_parser.dart';
+import 'parsers/services_parser.dart';
 
 /// Unified facade for interacting with Homebrew.
 ///
@@ -37,6 +39,7 @@ class Brew {
   final JsonV2Parser _jsonV2Parser;
   final SearchParser _searchParser;
   final ListParser _listParser;
+  final ServicesParser _servicesParser;
 
   Brew({
     BrewCli? cli,
@@ -45,12 +48,14 @@ class Brew {
     JsonV2Parser jsonV2Parser = const JsonV2Parser(),
     SearchParser searchParser = const SearchParser(),
     ListParser listParser = const ListParser(),
+    ServicesParser servicesParser = const ServicesParser(),
   })  : _cli = cli ?? BrewCli(),
         _configParser = configParser,
         _doctorParser = doctorParser,
         _jsonV2Parser = jsonV2Parser,
         _searchParser = searchParser,
-        _listParser = listParser;
+        _listParser = listParser,
+        _servicesParser = servicesParser;
 
   /// The underlying CLI runner, exposed for advanced use cases.
   BrewCli get cli => _cli;
@@ -617,6 +622,156 @@ class Brew {
       name,
     ];
     final result = await _cli.run(args);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Phase 5: System & Maintenance
+  // ---------------------------------------------------------------------------
+
+  /// Update Homebrew itself.
+  ///
+  /// Uses `brew update [--force]`.
+  Future<UpdateResult> update({bool force = false}) async {
+    final args = <String>[
+      'update',
+      if (force) '--force',
+    ];
+    final stopwatch = Stopwatch()..start();
+    final result = await _cli.run(
+      args,
+      timeout: const Duration(minutes: 10),
+      extraEnv: {'HOMEBREW_NO_AUTO_UPDATE': '0'},
+    );
+    stopwatch.stop();
+    return UpdateResult(
+      success: result.isSuccess,
+      exitCode: result.exitCode,
+      output: result.stdout,
+      errorMessage: result.isSuccess ? null : result.stderr,
+      elapsed: stopwatch.elapsed,
+    );
+  }
+
+  /// Stream `brew update` output in real-time.
+  Stream<ProcessOutput> updateStream({bool force = false}) {
+    return _cli.stream(
+      [
+        'update',
+        if (force) '--force',
+      ],
+      extraEnv: {'HOMEBREW_NO_AUTO_UPDATE': '0'},
+    );
+  }
+
+  /// Create symlinks for a formula in the Homebrew prefix.
+  ///
+  /// Uses `brew link [--overwrite] [--force] <formula>`.
+  Future<void> link(
+    String formula, {
+    bool overwrite = false,
+    bool force = false,
+  }) async {
+    final args = <String>[
+      'link',
+      if (overwrite) '--overwrite',
+      if (force) '--force',
+      formula,
+    ];
+    final result = await _cli.run(args);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+  }
+
+  /// Remove symlinks for a formula from the Homebrew prefix.
+  ///
+  /// Uses `brew unlink [--dry-run] <formula>`.
+  Future<void> unlink(String formula, {bool dryRun = false}) async {
+    final args = <String>[
+      'unlink',
+      if (dryRun) '--dry-run',
+      formula,
+    ];
+    final result = await _cli.run(args);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+  }
+
+  /// Pin a formula to prevent it from being upgraded.
+  ///
+  /// Uses `brew pin <formula>`.
+  Future<void> pin(String formula) async {
+    final result = await _cli.run(['pin', formula]);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+  }
+
+  /// Unpin a formula to allow it to be upgraded again.
+  ///
+  /// Uses `brew unpin <formula>`.
+  Future<void> unpin(String formula) async {
+    final result = await _cli.run(['unpin', formula]);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+  }
+
+  /// List all pinned formulae.
+  ///
+  /// Uses `brew list --pinned`.
+  Future<List<String>> pinned() async {
+    final result = await _cli.run(['list', '--pinned']);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+    return result.stdout
+        .split('\n')
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
+  }
+
+  /// List all Homebrew-managed services.
+  ///
+  /// Uses `brew services list` (text-parsed).
+  Future<List<BrewService>> services() async {
+    final result = await _cli.run(['services', 'list']);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+    return _servicesParser.parse(result.stdout);
+  }
+
+  /// Start a Homebrew-managed service.
+  ///
+  /// Uses `brew services start <name>`.
+  Future<void> startService(String name) async {
+    final result = await _cli.run(['services', 'start', name]);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+  }
+
+  /// Stop a Homebrew-managed service.
+  ///
+  /// Uses `brew services stop <name>`.
+  Future<void> stopService(String name) async {
+    final result = await _cli.run(['services', 'stop', name]);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+  }
+
+  /// Restart a Homebrew-managed service.
+  ///
+  /// Uses `brew services restart <name>`.
+  Future<void> restartService(String name) async {
+    final result = await _cli.run(['services', 'restart', name]);
     if (!result.isSuccess) {
       throw BrewCommandException.fromResult(result);
     }
