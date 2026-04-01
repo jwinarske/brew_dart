@@ -87,7 +87,7 @@ class DependencyConflictException extends BrewException {
   final String packageName;
   final List<String> dependents;
 
-  const DependencyConflictException({
+  DependencyConflictException({
     required this.packageName,
     required this.dependents,
   }) : super('cannot remove $packageName: required by ${dependents.join(', ')}');

@@ -74,7 +74,7 @@ void main() {
 
   group('DependencyConflictException', () {
     test('includes package name and dependents', () {
-      const e = DependencyConflictException(
+      final e = DependencyConflictException(
         packageName: 'icu4c',
         dependents: ['node', 'php'],
       );
@@ -89,7 +89,7 @@ void main() {
     });
 
     test('single dependent', () {
-      const e = DependencyConflictException(
+      final e = DependencyConflictException(
         packageName: 'openssl@3',
         dependents: ['python@3.12'],
       );
