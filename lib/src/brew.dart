@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'cli/brew_cli.dart';
 import 'cli/brew_process_result.dart';
@@ -12,9 +13,12 @@ import 'models/installed_package.dart';
 import 'models/outdated_package.dart';
 import 'models/package_info.dart';
 import 'models/search_result.dart';
+import 'models/brewfile.dart';
+import 'models/bundle_result.dart';
 import 'models/service.dart';
 import 'models/tap.dart';
 import 'models/update_result.dart';
+import 'parsers/brewfile_parser.dart';
 import 'parsers/config_parser.dart';
 import 'parsers/doctor_parser.dart';
 import 'parsers/json_v2_parser.dart';
@@ -40,6 +44,7 @@ class Brew {
   final SearchParser _searchParser;
   final ListParser _listParser;
   final ServicesParser _servicesParser;
+  final BrewfileParser _brewfileParser;
 
   Brew({
     BrewCli? cli,
@@ -49,13 +54,15 @@ class Brew {
     SearchParser searchParser = const SearchParser(),
     ListParser listParser = const ListParser(),
     ServicesParser servicesParser = const ServicesParser(),
+    BrewfileParser brewfileParser = const BrewfileParser(),
   })  : _cli = cli ?? BrewCli(),
         _configParser = configParser,
         _doctorParser = doctorParser,
         _jsonV2Parser = jsonV2Parser,
         _searchParser = searchParser,
         _listParser = listParser,
-        _servicesParser = servicesParser;
+        _servicesParser = servicesParser,
+        _brewfileParser = brewfileParser;
 
   /// The underlying CLI runner, exposed for advanced use cases.
   BrewCli get cli => _cli;
@@ -775,6 +782,95 @@ class Brew {
     if (!result.isSuccess) {
       throw BrewCommandException.fromResult(result);
     }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Phase 6: Brewfile Support
+  // ---------------------------------------------------------------------------
+
+  /// Parse a Brewfile into a list of declarations.
+  ///
+  /// Reads the file at [path] and parses it into a [Brewfile] model.
+  Future<Brewfile> readBrewfile(String path) async {
+    final file = File(path);
+    final content = await file.readAsString();
+    return _brewfileParser.parse(content);
+  }
+
+  /// Generate a Brewfile from currently installed packages.
+  ///
+  /// Uses `brew bundle dump [--file=<path>] [--force]`.
+  /// Returns the Brewfile content as a string.
+  Future<String> bundleDump({String? file, bool force = false}) async {
+    final args = <String>[
+      'bundle',
+      'dump',
+      if (file != null) '--file=$file',
+      if (force) '--force',
+      // If no file specified, dump to stdout
+      if (file == null) '--file=/dev/stdout',
+    ];
+    final result = await _cli.run(args);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+    return result.stdout;
+  }
+
+  /// Install everything in a Brewfile.
+  ///
+  /// Uses `brew bundle [--file=<path>] [--verbose]`.
+  Future<BundleResult> bundle({String? file, bool verbose = false}) async {
+    final args = <String>[
+      'bundle',
+      if (file != null) '--file=$file',
+      if (verbose) '--verbose',
+    ];
+    final stopwatch = Stopwatch()..start();
+    final result = await _cli.run(
+      args,
+      timeout: const Duration(minutes: 30),
+    );
+    stopwatch.stop();
+    return BundleResult(
+      success: result.isSuccess,
+      exitCode: result.exitCode,
+      output: result.stdout,
+      errorMessage: result.isSuccess ? null : result.stderr,
+      elapsed: stopwatch.elapsed,
+    );
+  }
+
+  /// Check Brewfile against installed packages.
+  ///
+  /// Uses `brew bundle check [--file=<path>]`.
+  /// Returns a [BundleCheckResult] indicating whether all entries are satisfied.
+  Future<BundleCheckResult> bundleCheck({String? file}) async {
+    final args = <String>[
+      'bundle',
+      'check',
+      if (file != null) '--file=$file',
+    ];
+    final result = await _cli.run(args);
+    // Exit code 1 means unsatisfied entries, not an error.
+    final missing = <String>[];
+    if (!result.isSuccess) {
+      // Parse lines like "brew install git" or "cask install docker"
+      for (final line in result.stdout.split('\n')) {
+        final trimmed = line.trim();
+        if (trimmed.isNotEmpty &&
+            !trimmed.startsWith('The Brewfile') &&
+            !trimmed.startsWith('Homebrew Bundle')) {
+          missing.add(trimmed);
+        }
+      }
+    }
+    return BundleCheckResult(
+      satisfied: result.isSuccess,
+      exitCode: result.exitCode,
+      output: result.stdout,
+      missingEntries: missing,
+    );
   }
 
   // ---------------------------------------------------------------------------
