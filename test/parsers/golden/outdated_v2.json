@@ -1,0 +1,33 @@
+{
+  "formulae": [
+    {
+      "name": "node",
+      "installed_versions": [
+        "22.0.0"
+      ],
+      "current_version": "22.0.0",
+      "latest_version": "23.11.0",
+      "pinned": false,
+      "pinned_version": null
+    },
+    {
+      "name": "openssl@3",
+      "installed_versions": [
+        "3.3.2"
+      ],
+      "current_version": "3.3.2",
+      "latest_version": "3.4.1",
+      "pinned": false,
+      "pinned_version": null
+    }
+  ],
+  "casks": [
+    {
+      "name": "docker",
+      "installed_versions": "4.37.1,178610",
+      "current_version": "4.37.1,178610",
+      "latest_version": "4.39.0,187986",
+      "greedy": false
+    }
+  ]
+}

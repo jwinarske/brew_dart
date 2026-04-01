@@ -1,0 +1,3 @@
+brew "ripgrep" needs to be installed.
+cask "docker" needs to be installed.
+The Brewfile's dependencies are not satisfied.

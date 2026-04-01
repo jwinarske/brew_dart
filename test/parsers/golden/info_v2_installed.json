@@ -1,0 +1,413 @@
+{
+  "formulae": [
+    {
+      "name": "git",
+      "full_name": "git",
+      "tap": "homebrew/core",
+      "oldnames": [],
+      "aliases": [],
+      "versioned_formulae": [],
+      "desc": "Distributed revision control system",
+      "license": "GPL-2.0-only",
+      "homepage": "https://git-scm.com",
+      "versions": {
+        "stable": "2.49.0",
+        "head": "HEAD",
+        "bottle": true
+      },
+      "urls": {
+        "stable": {
+          "url": "https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.49.0.tar.xz",
+          "tag": null,
+          "revision": null,
+          "using": null,
+          "checksum": "a8868e0a4e61f1c53e3092e8c5e7f592b1b7dc6b7f2d2fcab34f298e4faa3c6"
+        }
+      },
+      "revision": 0,
+      "version_scheme": 0,
+      "bottle": {
+        "stable": {
+          "rebuild": 0,
+          "root_url": "https://ghcr.io/v2/homebrew/core",
+          "files": {
+            "arm64_sonoma": {
+              "cellar": "/opt/homebrew/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:a1b2c3d4e5f6",
+              "sha256": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
+            }
+          }
+        }
+      },
+      "pour_bottle_only_if": null,
+      "keg_only": false,
+      "keg_only_reason": null,
+      "options": [],
+      "build_dependencies": [
+        "gettext"
+      ],
+      "dependencies": [
+        "pcre2"
+      ],
+      "optional_dependencies": [],
+      "recommended_dependencies": [],
+      "test_dependencies": [],
+      "uses_from_macos": [
+        "curl",
+        "expat",
+        "zlib"
+      ],
+      "uses_from_macos_bounds": [
+        {},
+        {},
+        {}
+      ],
+      "requirements": [],
+      "conflicts_with": [],
+      "conflicts_with_reasons": [],
+      "link_overwrite": [],
+      "caveats": null,
+      "installed": [
+        {
+          "version": "2.49.0",
+          "used_options": [],
+          "built_as_bottle": true,
+          "poured_from_bottle": true,
+          "time": 1711900800,
+          "runtime_dependencies": [
+            {
+              "full_name": "pcre2",
+              "version": "10.44",
+              "revision": 0,
+              "pkg_version": "10.44",
+              "declared_directly": true
+            }
+          ],
+          "installed_as_dependency": false,
+          "installed_on_request": true
+        }
+      ],
+      "linked_keg": "2.49.0",
+      "pinned": false,
+      "outdated": false,
+      "deprecated": false,
+      "deprecation_date": null,
+      "deprecation_reason": null,
+      "disabled": false,
+      "disable_date": null,
+      "disable_reason": null,
+      "post_install_defined": false,
+      "service": null,
+      "tap_git_head": "abc1234def5678901234567890abcdef12345678",
+      "ruby_source_path": "Formula/g/git.rb",
+      "ruby_source_checksum": {
+        "sha256": "f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1"
+      }
+    },
+    {
+      "name": "node",
+      "full_name": "node",
+      "tap": "homebrew/core",
+      "oldnames": [],
+      "aliases": [
+        "node.js",
+        "nodejs"
+      ],
+      "versioned_formulae": [
+        "node@22",
+        "node@20"
+      ],
+      "desc": "Platform built on V8 to build network applications",
+      "license": "MIT",
+      "homepage": "https://nodejs.org/",
+      "versions": {
+        "stable": "23.11.0",
+        "head": "HEAD",
+        "bottle": true
+      },
+      "urls": {
+        "stable": {
+          "url": "https://nodejs.org/dist/v23.11.0/node-v23.11.0.tar.xz",
+          "tag": null,
+          "revision": null,
+          "using": null,
+          "checksum": "b1c2d3e4f5a6b1c2d3e4f5a6b1c2d3e4f5a6b1c2d3e4f5a6b1c2d3e4f5a6b1c2"
+        }
+      },
+      "revision": 0,
+      "version_scheme": 0,
+      "bottle": {
+        "stable": {
+          "rebuild": 0,
+          "root_url": "https://ghcr.io/v2/homebrew/core",
+          "files": {
+            "arm64_sonoma": {
+              "cellar": ":any",
+              "url": "https://ghcr.io/v2/homebrew/core/node/blobs/sha256:aabb1122",
+              "sha256": "aabb112233445566778899aabb112233445566778899aabb112233445566778899"
+            }
+          }
+        }
+      },
+      "pour_bottle_only_if": null,
+      "keg_only": false,
+      "keg_only_reason": null,
+      "options": [],
+      "build_dependencies": [
+        "pkg-config",
+        "python@3.12"
+      ],
+      "dependencies": [
+        "brotli",
+        "c-ares",
+        "icu4c@76",
+        "libnghttp2",
+        "libuv",
+        "openssl@3"
+      ],
+      "optional_dependencies": [],
+      "recommended_dependencies": [],
+      "test_dependencies": [],
+      "uses_from_macos": [],
+      "uses_from_macos_bounds": [],
+      "requirements": [],
+      "conflicts_with": [],
+      "conflicts_with_reasons": [],
+      "link_overwrite": [],
+      "caveats": null,
+      "installed": [
+        {
+          "version": "23.11.0",
+          "used_options": [],
+          "built_as_bottle": true,
+          "poured_from_bottle": true,
+          "time": 1711900900,
+          "runtime_dependencies": [
+            {
+              "full_name": "brotli",
+              "version": "1.1.0",
+              "revision": 0,
+              "pkg_version": "1.1.0",
+              "declared_directly": true
+            },
+            {
+              "full_name": "c-ares",
+              "version": "1.34.4",
+              "revision": 0,
+              "pkg_version": "1.34.4",
+              "declared_directly": true
+            },
+            {
+              "full_name": "icu4c@76",
+              "version": "76.1",
+              "revision": 0,
+              "pkg_version": "76.1",
+              "declared_directly": true
+            },
+            {
+              "full_name": "libnghttp2",
+              "version": "1.65.0",
+              "revision": 0,
+              "pkg_version": "1.65.0",
+              "declared_directly": true
+            },
+            {
+              "full_name": "libuv",
+              "version": "1.50.0",
+              "revision": 0,
+              "pkg_version": "1.50.0",
+              "declared_directly": true
+            },
+            {
+              "full_name": "openssl@3",
+              "version": "3.4.1",
+              "revision": 0,
+              "pkg_version": "3.4.1",
+              "declared_directly": true
+            }
+          ],
+          "installed_as_dependency": false,
+          "installed_on_request": true
+        }
+      ],
+      "linked_keg": "23.11.0",
+      "pinned": false,
+      "outdated": false,
+      "deprecated": false,
+      "deprecation_date": null,
+      "deprecation_reason": null,
+      "disabled": false,
+      "disable_date": null,
+      "disable_reason": null,
+      "post_install_defined": false,
+      "service": null,
+      "tap_git_head": "abc1234def5678901234567890abcdef12345678",
+      "ruby_source_path": "Formula/n/node.rb",
+      "ruby_source_checksum": {
+        "sha256": "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b"
+      }
+    },
+    {
+      "name": "openssl@3",
+      "full_name": "openssl@3",
+      "tap": "homebrew/core",
+      "oldnames": [],
+      "aliases": [
+        "openssl"
+      ],
+      "versioned_formulae": [],
+      "desc": "Cryptography and SSL/TLS Toolkit",
+      "license": "Apache-2.0",
+      "homepage": "https://openssl.org/",
+      "versions": {
+        "stable": "3.4.1",
+        "head": null,
+        "bottle": true
+      },
+      "urls": {
+        "stable": {
+          "url": "https://github.com/openssl/openssl/releases/download/openssl-3.4.1/openssl-3.4.1.tar.gz",
+          "tag": null,
+          "revision": null,
+          "using": null,
+          "checksum": "c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3"
+        }
+      },
+      "revision": 0,
+      "version_scheme": 1,
+      "bottle": {
+        "stable": {
+          "rebuild": 0,
+          "root_url": "https://ghcr.io/v2/homebrew/core",
+          "files": {
+            "arm64_sonoma": {
+              "cellar": "/opt/homebrew/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/openssl@3/blobs/sha256:dd1122",
+              "sha256": "dd11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff"
+            }
+          }
+        }
+      },
+      "pour_bottle_only_if": null,
+      "keg_only": true,
+      "keg_only_reason": {
+        "reason": "provided_by_macos",
+        "explanation": "macOS provides LibreSSL"
+      },
+      "options": [],
+      "build_dependencies": [],
+      "dependencies": [
+        "ca-certificates"
+      ],
+      "optional_dependencies": [],
+      "recommended_dependencies": [],
+      "test_dependencies": [],
+      "uses_from_macos": [],
+      "uses_from_macos_bounds": [],
+      "requirements": [],
+      "conflicts_with": [],
+      "conflicts_with_reasons": [],
+      "link_overwrite": [],
+      "caveats": null,
+      "installed": [
+        {
+          "version": "3.4.1",
+          "used_options": [],
+          "built_as_bottle": true,
+          "poured_from_bottle": true,
+          "time": 1711900700,
+          "runtime_dependencies": [
+            {
+              "full_name": "ca-certificates",
+              "version": "2024-11-26",
+              "revision": 0,
+              "pkg_version": "2024-11-26",
+              "declared_directly": true
+            }
+          ],
+          "installed_as_dependency": false,
+          "installed_on_request": true
+        }
+      ],
+      "linked_keg": null,
+      "pinned": false,
+      "outdated": false,
+      "deprecated": false,
+      "deprecation_date": null,
+      "deprecation_reason": null,
+      "disabled": false,
+      "disable_date": null,
+      "disable_reason": null,
+      "post_install_defined": true,
+      "service": null,
+      "tap_git_head": "abc1234def5678901234567890abcdef12345678",
+      "ruby_source_path": "Formula/o/openssl@3.rb",
+      "ruby_source_checksum": {
+        "sha256": "2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c"
+      }
+    }
+  ],
+  "casks": [
+    {
+      "token": "visual-studio-code",
+      "full_token": "homebrew/cask/visual-studio-code",
+      "old_tokens": [],
+      "tap": "homebrew/cask",
+      "name": [
+        "Microsoft Visual Studio Code",
+        "VS Code"
+      ],
+      "desc": "Open-source code editor",
+      "homepage": "https://code.visualstudio.com/",
+      "url": "https://update.code.visualstudio.com/1.98.2/darwin-arm64/stable",
+      "url_specs": {
+        "verified": "update.code.visualstudio.com/"
+      },
+      "version": "1.98.2",
+      "sha256": "aabbccdd11223344556677889900aabbccddeeff11223344556677889900aabbcc",
+      "artifacts": [
+        {
+          "app": [
+            "Visual Studio Code.app"
+          ]
+        },
+        {
+          "binary": [
+            "#{appdir}/Visual Studio Code.app/Contents/Resources/app/bin/code",
+            "target: #{HOMEBREW_PREFIX}/bin/code"
+          ]
+        }
+      ],
+      "caveats": null,
+      "depends_on": {
+        "macos": {
+          ">=": [
+            "catalina"
+          ]
+        }
+      },
+      "conflicts_with": {
+        "cask": [
+          "visual-studio-code@insiders"
+        ]
+      },
+      "container": null,
+      "auto_updates": true,
+      "deprecated": false,
+      "deprecation_date": null,
+      "deprecation_reason": null,
+      "disabled": false,
+      "disable_date": null,
+      "disable_reason": null,
+      "tap_git_head": "abc1234def5678901234567890abcdef12345678",
+      "languages": [],
+      "ruby_source_path": "Casks/v/visual-studio-code.rb",
+      "ruby_source_checksum": {
+        "sha256": "3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d"
+      },
+      "installed": "1.98.2",
+      "installed_time": 1711900500,
+      "outdated": false
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+HOMEBREW_VERSION: 4.4.23
+ORIGIN: https://github.com/Homebrew/brew
+HEAD: abc1234def5678
+HOMEBREW_PREFIX: /opt/homebrew
+HOMEBREW_CELLAR: /opt/homebrew/Cellar
+HOMEBREW_CASKROOM: /opt/homebrew/Caskroom
+HOMEBREW_REPOSITORY: /opt/homebrew
+Core tap origin: https://github.com/Homebrew/homebrew-core
+Core tap HEAD: def4567abc8901
+Core tap branch: master
+Core tap JSON: 01 Apr 08:00 UTC
+HOMEBREW_RUBY: 3.3.0
+CPU: octa-core 64-bit arm_firestorm_icestorm
+Homebrew Ruby: 3.1.4 => /opt/homebrew/Library/Homebrew/vendor/portable-ruby/3.1.4/bin/ruby
+Clang: 15.0.0 build 1500
+Git: 2.49.0 => /opt/homebrew/bin/git
+OS: macOS 15.3-arm64
+macOS: 15.3-arm64
+Xcode: 15.4
+CLT: 15.4.0.0.1.1717440798
+Rosetta 2: false

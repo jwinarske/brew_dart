@@ -1,0 +1,12 @@
+Warning: Some installed formulae are deprecated.
+You should find replacements for the following formulae:
+  python@3.8
+
+Warning: Broken symlinks were found.
+Remove them with `brew cleanup`:
+  /usr/local/bin/python3.8
+  /usr/local/lib/libpython3.8.dylib
+
+Warning: Your Xcode is outdated.
+Please update to Xcode 15.4 (or delete it).
+Xcode can be updated from the App Store.

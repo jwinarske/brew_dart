@@ -1,0 +1,31 @@
+name: Integration Tests
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # weekly Monday 6am UTC
+  push:
+    tags: ['v*']
+  workflow_dispatch: {}
+
+jobs:
+  integration:
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+      - run: dart pub get
+      - name: Record brew version
+        run: brew --version
+      - name: Run integration tests
+        run: dart test --tags integration --timeout 120s
+      - name: Capture actual brew output (on failure)
+        if: failure()
+        run: |
+          brew info --json=v2 git > test/parsers/golden/ci_info_v2.json
+          brew search node > test/parsers/golden/ci_search.txt
+          brew services list > test/parsers/golden/ci_services.txt || true
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: golden-files-${{ github.run_id }}
+          path: test/parsers/golden/ci_*

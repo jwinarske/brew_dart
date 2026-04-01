@@ -1,0 +1,12 @@
+==> Formulae
+libnode
+node
+node@20
+node@22
+node_exporter
+nodebrew
+nodeenv
+
+==> Casks
+nodebox
+nodeclipse

@@ -1,0 +1,10 @@
+ca-certificates
+gettext
+git
+libidn2
+node
+openssl@3
+pcre2
+readline
+sqlite
+xz
