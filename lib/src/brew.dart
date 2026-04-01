@@ -3,13 +3,17 @@ import 'dart:async';
 import 'cli/brew_cli.dart';
 import 'cli/brew_process_result.dart';
 import 'exceptions.dart';
+import 'dart:convert';
+
 import 'models/batch_result.dart';
 import 'models/brew_config.dart';
+import 'models/dependency.dart';
 import 'models/doctor_report.dart';
 import 'models/installed_package.dart';
 import 'models/outdated_package.dart';
 import 'models/package_info.dart';
 import 'models/search_result.dart';
+import 'models/tap.dart';
 import 'parsers/config_parser.dart';
 import 'parsers/doctor_parser.dart';
 import 'parsers/json_v2_parser.dart';
@@ -484,6 +488,138 @@ class Brew {
   Future<bool> isPackageInstalled(String name, {bool cask = false}) async {
     final names = await listNames(cask: cask);
     return names.contains(name);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Phase 4: Dependency & Tap Management
+  // ---------------------------------------------------------------------------
+
+  /// Show dependencies for a formula.
+  ///
+  /// Uses `brew deps [--tree] [--installed] [--include-build]
+  /// [--include-optional] [--include-test] <formula>`.
+  Future<List<String>> deps(
+    String formula, {
+    bool tree = false,
+    bool installed = false,
+    bool includeAll = false,
+  }) async {
+    final args = <String>[
+      'deps',
+      if (tree) '--tree',
+      if (installed) '--installed',
+      if (includeAll) ...[
+        '--include-build',
+        '--include-optional',
+        '--include-test',
+      ],
+      formula,
+    ];
+    final result = await _cli.run(args);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+    return result.stdout
+        .split('\n')
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
+  }
+
+  /// Show which installed packages depend on this one.
+  ///
+  /// Uses `brew uses [--installed] [--recursive] <formula>`.
+  Future<List<String>> uses(
+    String formula, {
+    bool installed = true,
+    bool recursive = false,
+  }) async {
+    final args = <String>[
+      'uses',
+      if (installed) '--installed',
+      if (recursive) '--recursive',
+      formula,
+    ];
+    final result = await _cli.run(args);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+    return result.stdout
+        .split('\n')
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
+  }
+
+  /// Show broken/missing dependencies.
+  ///
+  /// Uses `brew missing`. Output format: `formula: dep1 dep2 ...`
+  Future<List<MissingDependency>> missing() async {
+    final result = await _cli.run(['missing']);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+    final output = result.stdout.trim();
+    if (output.isEmpty) return [];
+
+    return output.split('\n').where((l) => l.trim().isNotEmpty).map((line) {
+      final colonIndex = line.indexOf(':');
+      if (colonIndex == -1) {
+        return MissingDependency(formula: line.trim(), missingDeps: []);
+      }
+      final formula = line.substring(0, colonIndex).trim();
+      final deps = line
+          .substring(colonIndex + 1)
+          .trim()
+          .split(RegExp(r'\s+'))
+          .where((d) => d.isNotEmpty)
+          .toList();
+      return MissingDependency(formula: formula, missingDeps: deps);
+    }).toList();
+  }
+
+  /// List all taps with details.
+  ///
+  /// Uses `brew tap-info --json --installed` (JSON-backed).
+  Future<List<Tap>> taps() async {
+    final result = await _cli.run(['tap-info', '--json', '--installed']);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+    final json = jsonDecode(result.stdout) as List<dynamic>;
+    return json
+        .map((e) => Tap.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Add a tap.
+  ///
+  /// Uses `brew tap <user/repo> [<url>]`.
+  Future<void> tap(String name, {String? url}) async {
+    final args = <String>[
+      'tap',
+      name,
+      if (url != null) url,
+    ];
+    final result = await _cli.run(args);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
+  }
+
+  /// Remove a tap.
+  ///
+  /// Uses `brew untap [--force] <user/repo>`.
+  Future<void> untap(String name, {bool force = false}) async {
+    final args = <String>[
+      'untap',
+      if (force) '--force',
+      name,
+    ];
+    final result = await _cli.run(args);
+    if (!result.isSuccess) {
+      throw BrewCommandException.fromResult(result);
+    }
   }
 
   // ---------------------------------------------------------------------------
