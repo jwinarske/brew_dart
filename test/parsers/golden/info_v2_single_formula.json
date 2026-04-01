@@ -11,54 +11,64 @@
       "license": "GPL-2.0-only",
       "homepage": "https://git-scm.com",
       "versions": {
-        "stable": "2.49.0",
+        "stable": "2.53.0",
         "head": "HEAD",
         "bottle": true
       },
       "urls": {
         "stable": {
-          "url": "https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.49.0.tar.xz",
+          "url": "https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.53.0.tar.xz",
           "tag": null,
           "revision": null,
           "using": null,
-          "checksum": "a8868e0a4e61f1c53e3092e8c5e7f592b1b7dc6b7f2d2fcab34f298e4faa3c6"
+          "checksum": "5818bd7d80b061bbbdfec8a433d609dc8818a05991f731ffc4a561e2ca18c653"
         },
         "head": {
           "url": "https://github.com/git/git.git",
-          "branch": "master"
+          "branch": "master",
+          "using": null
         }
       },
-      "revision": 0,
+      "revision": 1,
       "version_scheme": 0,
+      "compatibility_version": null,
+      "autobump": true,
+      "no_autobump_message": null,
+      "skip_livecheck": false,
       "bottle": {
         "stable": {
           "rebuild": 0,
           "root_url": "https://ghcr.io/v2/homebrew/core",
           "files": {
+            "arm64_tahoe": {
+              "cellar": "/opt/homebrew/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:48d11e6aaf34cd77ccc23d6d44b9792cc6599853352fd22dc70f018307d91ad6",
+              "sha256": "48d11e6aaf34cd77ccc23d6d44b9792cc6599853352fd22dc70f018307d91ad6"
+            },
+            "arm64_sequoia": {
+              "cellar": "/opt/homebrew/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:798a2c0ca3ca80119d618f760ca2947f897753b7d9da901b1215b6c3a7637980",
+              "sha256": "798a2c0ca3ca80119d618f760ca2947f897753b7d9da901b1215b6c3a7637980"
+            },
             "arm64_sonoma": {
               "cellar": "/opt/homebrew/Cellar",
-              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
-              "sha256": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
-            },
-            "arm64_ventura": {
-              "cellar": "/opt/homebrew/Cellar",
-              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
-              "sha256": "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3"
+              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:0adcd4c3164162705fd7290557587fdfb0e271b9d9b5dcbca75b219b4ca5da41",
+              "sha256": "0adcd4c3164162705fd7290557587fdfb0e271b9d9b5dcbca75b219b4ca5da41"
             },
             "sonoma": {
-              "cellar": "/opt/homebrew/Cellar",
-              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4",
-              "sha256": "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"
+              "cellar": "/usr/local/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:7505b924f98e5e1b7e412b1a37f91d72ebed4b8d9b9ad65bf2ca5179d601a949",
+              "sha256": "7505b924f98e5e1b7e412b1a37f91d72ebed4b8d9b9ad65bf2ca5179d601a949"
             },
-            "ventura": {
-              "cellar": "/opt/homebrew/Cellar",
-              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5",
-              "sha256": "d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5"
+            "arm64_linux": {
+              "cellar": "/home/linuxbrew/.linuxbrew/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:cffdf96390bc57c53009245a200fed79275ae1d202ad2fd13d4f4a66a48aedd3",
+              "sha256": "cffdf96390bc57c53009245a200fed79275ae1d202ad2fd13d4f4a66a48aedd3"
             },
             "x86_64_linux": {
               "cellar": "/home/linuxbrew/.linuxbrew/Cellar",
-              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6",
-              "sha256": "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6"
+              "url": "https://ghcr.io/v2/homebrew/core/git/blobs/sha256:69b8ad022d6ed8b241806c16b7c066272a6708ccfbfb8bc19d975b8c379018b3",
+              "sha256": "69b8ad022d6ed8b241806c16b7c066272a6708ccfbfb8bc19d975b8c379018b3"
             }
           }
         }
@@ -68,21 +78,20 @@
       "keg_only_reason": null,
       "options": [],
       "build_dependencies": [
-        "gettext"
+        "pkgconf"
       ],
       "dependencies": [
+        "gettext",
         "pcre2"
       ],
-      "optional_dependencies": [],
-      "recommended_dependencies": [],
       "test_dependencies": [],
+      "recommended_dependencies": [],
+      "optional_dependencies": [],
       "uses_from_macos": [
         "curl",
-        "expat",
-        "zlib"
+        "expat"
       ],
       "uses_from_macos_bounds": [
-        {},
         {},
         {}
       ],
@@ -90,23 +99,65 @@
       "conflicts_with": [],
       "conflicts_with_reasons": [],
       "link_overwrite": [],
-      "caveats": null,
-      "installed": [],
-      "linked_keg": null,
+      "caveats": "The Tcl/Tk GUIs (e.g. gitk, git-gui) are now in the `git-gui` formula.\nSubversion interoperability (git-svn) is now in the `git-svn` formula.\n",
+      "installed": [
+        {
+          "version": "2.53.0_1",
+          "used_options": [],
+          "built_as_bottle": true,
+          "poured_from_bottle": true,
+          "time": 1775062521,
+          "runtime_dependencies": [
+            {
+              "full_name": "libunistring",
+              "version": "1.4.2",
+              "revision": 0,
+              "bottle_rebuild": 0,
+              "pkg_version": "1.4.2",
+              "declared_directly": false
+            },
+            {
+              "full_name": "gettext",
+              "version": "1.0",
+              "revision": 0,
+              "bottle_rebuild": 0,
+              "pkg_version": "1.0",
+              "declared_directly": true
+            },
+            {
+              "full_name": "pcre2",
+              "version": "10.47",
+              "revision": 1,
+              "bottle_rebuild": 0,
+              "pkg_version": "10.47_1",
+              "declared_directly": true
+            }
+          ],
+          "installed_as_dependency": false,
+          "installed_on_request": true
+        }
+      ],
+      "linked_keg": "2.53.0_1",
       "pinned": false,
       "outdated": false,
       "deprecated": false,
       "deprecation_date": null,
       "deprecation_reason": null,
+      "deprecation_replacement_formula": null,
+      "deprecation_replacement_cask": null,
+      "deprecate_args": null,
       "disabled": false,
       "disable_date": null,
       "disable_reason": null,
-      "post_install_defined": false,
+      "disable_replacement_formula": null,
+      "disable_replacement_cask": null,
+      "disable_args": null,
+      "post_install_defined": true,
       "service": null,
-      "tap_git_head": "abc1234def5678901234567890abcdef12345678",
+      "tap_git_head": "1c779bae699b5b76947124a0ad60429df2d794cf",
       "ruby_source_path": "Formula/g/git.rb",
       "ruby_source_checksum": {
-        "sha256": "f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1"
+        "sha256": "c516f9177aadcf563490b206c4dd6da5bab02414201cac0af8073095923a817e"
       }
     }
   ],

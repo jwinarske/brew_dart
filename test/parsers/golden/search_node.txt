@@ -1,12 +1,21 @@
-==> Formulae
-libnode
+linode-cli
+llnode
 node
+node-build
+node-red
+node-sass
+node@18
 node@20
 node@22
+node@24
 node_exporter
 nodebrew
 nodeenv
+nodenv
+ode
 
-==> Casks
+capslocknodelay
+font-ubuntu-mono-derivative-powerline
+nano-node
 nodebox
 nodeclipse

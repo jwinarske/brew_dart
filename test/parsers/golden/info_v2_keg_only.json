@@ -6,107 +6,155 @@
       "tap": "homebrew/core",
       "oldnames": [],
       "aliases": [
-        "openssl"
+        "openssl",
+        "openssl@3.6"
       ],
-      "versioned_formulae": [],
+      "versioned_formulae": [
+        "openssl@3.5",
+        "openssl@3.0"
+      ],
       "desc": "Cryptography and SSL/TLS Toolkit",
       "license": "Apache-2.0",
-      "homepage": "https://openssl.org/",
+      "homepage": "https://openssl-library.org",
       "versions": {
-        "stable": "3.4.1",
+        "stable": "3.6.1",
         "head": null,
         "bottle": true
       },
       "urls": {
         "stable": {
-          "url": "https://github.com/openssl/openssl/releases/download/openssl-3.4.1/openssl-3.4.1.tar.gz",
+          "url": "https://github.com/openssl/openssl/releases/download/openssl-3.6.1/openssl-3.6.1.tar.gz",
           "tag": null,
           "revision": null,
           "using": null,
-          "checksum": "c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3"
+          "checksum": "b1bfedcd5b289ff22aee87c9d600f515767ebf45f77168cb6d64f231f518a82e"
         }
       },
       "revision": 0,
-      "version_scheme": 1,
+      "version_scheme": 0,
+      "compatibility_version": null,
+      "autobump": true,
+      "no_autobump_message": null,
+      "skip_livecheck": false,
       "bottle": {
         "stable": {
           "rebuild": 0,
           "root_url": "https://ghcr.io/v2/homebrew/core",
           "files": {
+            "arm64_tahoe": {
+              "cellar": "/opt/homebrew/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/openssl/3/blobs/sha256:05e0b1eb559e584381c881f2bf38e57fc2c1a2603f15937961a3359d8dfd6872",
+              "sha256": "05e0b1eb559e584381c881f2bf38e57fc2c1a2603f15937961a3359d8dfd6872"
+            },
+            "arm64_sequoia": {
+              "cellar": "/opt/homebrew/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/openssl/3/blobs/sha256:ec5f544dd01f678d7bd9f5f2aa3f7ae5b8b7859d3e08158e52e02b383c14ef35",
+              "sha256": "ec5f544dd01f678d7bd9f5f2aa3f7ae5b8b7859d3e08158e52e02b383c14ef35"
+            },
             "arm64_sonoma": {
               "cellar": "/opt/homebrew/Cellar",
-              "url": "https://ghcr.io/v2/homebrew/core/openssl@3/blobs/sha256:dd1122334455",
-              "sha256": "dd11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff"
+              "url": "https://ghcr.io/v2/homebrew/core/openssl/3/blobs/sha256:d0f784ea2dce63f778a41cc0db641a95f8c46c39e5487bd151cad20760723b13",
+              "sha256": "d0f784ea2dce63f778a41cc0db641a95f8c46c39e5487bd151cad20760723b13"
             },
-            "arm64_ventura": {
-              "cellar": "/opt/homebrew/Cellar",
-              "url": "https://ghcr.io/v2/homebrew/core/openssl@3/blobs/sha256:ee2233445566",
-              "sha256": "ee22334455667788990011aabbccddeeff22334455667788990011aabbccddeeff"
+            "tahoe": {
+              "cellar": "/usr/local/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/openssl/3/blobs/sha256:c965b30b1122d4fe3a8b7b6eea235a915a0a8fbacf545d4c9e9b42eb559cbcf4",
+              "sha256": "c965b30b1122d4fe3a8b7b6eea235a915a0a8fbacf545d4c9e9b42eb559cbcf4"
+            },
+            "sequoia": {
+              "cellar": "/usr/local/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/openssl/3/blobs/sha256:7babfd90026c82c7d9765f90f8f0e0f9b787ea1106bf0c5d0dca6524c09076a5",
+              "sha256": "7babfd90026c82c7d9765f90f8f0e0f9b787ea1106bf0c5d0dca6524c09076a5"
             },
             "sonoma": {
-              "cellar": "/opt/homebrew/Cellar",
-              "url": "https://ghcr.io/v2/homebrew/core/openssl@3/blobs/sha256:ff3344556677",
-              "sha256": "ff33445566778899001122aabbccddeeff33445566778899001122aabbccddeeff"
+              "cellar": "/usr/local/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/openssl/3/blobs/sha256:9e28f179957b34d64a95c6de7912f0262fb3b42d2c0fb7607aacfa278c42deb8",
+              "sha256": "9e28f179957b34d64a95c6de7912f0262fb3b42d2c0fb7607aacfa278c42deb8"
+            },
+            "arm64_linux": {
+              "cellar": "/home/linuxbrew/.linuxbrew/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/openssl/3/blobs/sha256:8d292df071a77136a7472feeb6cf4ec65035e1327ef5fcc178cfa8443598fdce",
+              "sha256": "8d292df071a77136a7472feeb6cf4ec65035e1327ef5fcc178cfa8443598fdce"
+            },
+            "x86_64_linux": {
+              "cellar": "/home/linuxbrew/.linuxbrew/Cellar",
+              "url": "https://ghcr.io/v2/homebrew/core/openssl/3/blobs/sha256:89ac158da355fc26605808829909a11e23d604f2d70ac7e272f318a71c1eab5c",
+              "sha256": "89ac158da355fc26605808829909a11e23d604f2d70ac7e272f318a71c1eab5c"
             }
           }
         }
       },
       "pour_bottle_only_if": null,
-      "keg_only": true,
-      "keg_only_reason": {
-        "reason": "provided_by_macos",
-        "explanation": "macOS provides LibreSSL"
-      },
+      "keg_only": false,
+      "keg_only_reason": null,
       "options": [],
       "build_dependencies": [],
       "dependencies": [
         "ca-certificates"
       ],
-      "optional_dependencies": [],
-      "recommended_dependencies": [],
       "test_dependencies": [],
+      "recommended_dependencies": [],
+      "optional_dependencies": [],
       "uses_from_macos": [],
       "uses_from_macos_bounds": [],
       "requirements": [],
       "conflicts_with": [],
       "conflicts_with_reasons": [],
-      "link_overwrite": [],
-      "caveats": "A CA file has been bootstrapped using certificates from the system\nkeychain. To add additional certificates, place .pem files in\n  /opt/homebrew/etc/openssl@3/certs\n\nand run\n  /opt/homebrew/opt/openssl@3/bin/c_rehash\n",
+      "link_overwrite": [
+        "bin/c_rehash",
+        "bin/openssl",
+        "include/openssl/*",
+        "lib/libcrypto*",
+        "lib/libssl*",
+        "lib/pkgconfig/libcrypto.pc",
+        "lib/pkgconfig/libssl.pc",
+        "lib/pkgconfig/openssl.pc",
+        "share/doc/openssl/*",
+        "share/man/man*/*ssl"
+      ],
+      "caveats": "To add additional certificates, place .pem files in\n  $HOMEBREW_PREFIX/etc/openssl@3/certs\n\nand run\n  $HOMEBREW_PREFIX/opt/openssl@3/bin/c_rehash\n",
       "installed": [
         {
-          "version": "3.4.1",
+          "version": "3.6.1",
           "used_options": [],
           "built_as_bottle": true,
           "poured_from_bottle": true,
-          "time": 1711900700,
+          "time": 1774048209,
           "runtime_dependencies": [
             {
               "full_name": "ca-certificates",
-              "version": "2024-11-26",
+              "version": "2026-03-19",
               "revision": 0,
-              "pkg_version": "2024-11-26",
+              "bottle_rebuild": 0,
+              "pkg_version": "2026-03-19",
               "declared_directly": true
             }
           ],
-          "installed_as_dependency": false,
+          "installed_as_dependency": true,
           "installed_on_request": true
         }
       ],
-      "linked_keg": null,
+      "linked_keg": "3.6.1",
       "pinned": false,
       "outdated": false,
       "deprecated": false,
       "deprecation_date": null,
       "deprecation_reason": null,
+      "deprecation_replacement_formula": null,
+      "deprecation_replacement_cask": null,
+      "deprecate_args": null,
       "disabled": false,
       "disable_date": null,
       "disable_reason": null,
+      "disable_replacement_formula": null,
+      "disable_replacement_cask": null,
+      "disable_args": null,
       "post_install_defined": true,
       "service": null,
-      "tap_git_head": "abc1234def5678901234567890abcdef12345678",
+      "tap_git_head": "1c779bae699b5b76947124a0ad60429df2d794cf",
       "ruby_source_path": "Formula/o/openssl@3.rb",
       "ruby_source_checksum": {
-        "sha256": "2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c"
+        "sha256": "d89772a7b87a645bc4888947ad6cd87f5af07896f76156812021d0744949bf1c"
       }
     }
   ],

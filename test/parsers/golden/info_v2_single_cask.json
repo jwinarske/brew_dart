@@ -2,9 +2,11 @@
   "formulae": [],
   "casks": [
     {
-      "token": "docker",
-      "full_token": "homebrew/cask/docker",
-      "old_tokens": [],
+      "token": "docker-desktop",
+      "full_token": "docker-desktop",
+      "old_tokens": [
+        "docker"
+      ],
       "tap": "homebrew/cask",
       "name": [
         "Docker Desktop",
@@ -13,116 +15,204 @@
       ],
       "desc": "App to build and share containerised applications and microservices",
       "homepage": "https://www.docker.com/products/docker-desktop",
-      "url": "https://desktop.docker.com/mac/main/arm64/187986/Docker.dmg",
-      "url_specs": {
-        "verified": "desktop.docker.com/"
-      },
-      "version": "4.39.0,187986",
-      "sha256": "a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8",
+      "url": "https://desktop.docker.com/mac/main/arm64/222858/Docker.dmg",
+      "url_specs": {},
+      "version": "4.67.0,222858",
+      "autobump": true,
+      "no_autobump_message": null,
+      "skip_livecheck": false,
+      "installed": null,
+      "installed_time": null,
+      "bundle_version": "215387",
+      "bundle_short_version": "4.57.0",
+      "outdated": false,
+      "sha256": "33a369da24b8a8d77c4d73130bd8deb9a71bd9aca0fc353b1d96c6549eb0f595",
       "artifacts": [
+        {
+          "uninstall": [
+            {
+              "launchctl": [
+                "com.docker.helper",
+                "com.docker.socket",
+                "com.docker.vmnetd"
+              ],
+              "quit": "com.docker.docker",
+              "delete": [
+                "/Library/PrivilegedHelperTools/com.docker.socket",
+                "/Library/PrivilegedHelperTools/com.docker.vmnetd"
+              ],
+              "rmdir": "~/.docker/bin"
+            }
+          ]
+        },
         {
           "app": [
             "Docker.app"
           ]
         },
         {
-          "binary": [
-            "#{appdir}/Docker.app/Contents/Resources/bin/docker",
-            "target: #{HOMEBREW_PREFIX}/bin/docker"
+          "bash_completion": [
+            "/Applications/Docker.app/Contents/Resources/etc/docker.bash-completion"
+          ]
+        },
+        {
+          "fish_completion": [
+            "/Applications/Docker.app/Contents/Resources/etc/docker-compose.fish-completion"
+          ]
+        },
+        {
+          "fish_completion": [
+            "/Applications/Docker.app/Contents/Resources/etc/docker.fish-completion"
+          ]
+        },
+        {
+          "zsh_completion": [
+            "/Applications/Docker.app/Contents/Resources/etc/docker-compose.zsh-completion"
+          ]
+        },
+        {
+          "zsh_completion": [
+            "/Applications/Docker.app/Contents/Resources/etc/docker.zsh-completion"
           ]
         },
         {
           "binary": [
-            "#{appdir}/Docker.app/Contents/Resources/bin/docker-compose",
-            "target: #{HOMEBREW_PREFIX}/bin/docker-compose"
+            "/Applications/Docker.app/Contents/Resources/cli-plugins/docker-compose",
+            {
+              "target": "/usr/local/cli-plugins/docker-compose"
+            }
           ]
         },
         {
           "binary": [
-            "#{appdir}/Docker.app/Contents/Resources/bin/docker-credential-desktop",
-            "target: #{HOMEBREW_PREFIX}/bin/docker-credential-desktop"
+            "/Applications/Docker.app/Contents/Resources/bin/kubectl",
+            {
+              "target": "/usr/local/bin/kubectl.docker"
+            }
           ]
         },
         {
           "binary": [
-            "#{appdir}/Docker.app/Contents/Resources/bin/docker-credential-ecr-login",
-            "target: #{HOMEBREW_PREFIX}/bin/docker-credential-ecr-login"
+            "/Applications/Docker.app/Contents/Resources/bin/docker",
+            {
+              "target": "/usr/local/bin/docker"
+            }
           ]
         },
         {
           "binary": [
-            "#{appdir}/Docker.app/Contents/Resources/bin/docker-credential-osxkeychain",
-            "target: #{HOMEBREW_PREFIX}/bin/docker-credential-osxkeychain"
+            "/Applications/Docker.app/Contents/Resources/bin/docker-credential-desktop",
+            {
+              "target": "/usr/local/bin/docker-credential-desktop"
+            }
           ]
         },
         {
           "binary": [
-            "#{appdir}/Docker.app/Contents/Resources/bin/docker-index",
-            "target: #{HOMEBREW_PREFIX}/bin/docker-index"
+            "/Applications/Docker.app/Contents/Resources/bin/docker-credential-ecr-login",
+            {
+              "target": "/usr/local/bin/docker-credential-ecr-login"
+            }
           ]
         },
         {
           "binary": [
-            "#{appdir}/Docker.app/Contents/Resources/bin/hub-tool",
-            "target: #{HOMEBREW_PREFIX}/bin/hub-tool"
+            "/Applications/Docker.app/Contents/Resources/bin/docker-credential-osxkeychain",
+            {
+              "target": "/usr/local/bin/docker-credential-osxkeychain"
+            }
           ]
         },
         {
           "binary": [
-            "#{appdir}/Docker.app/Contents/Resources/bin/kubectl",
-            "target: #{HOMEBREW_PREFIX}/bin/kubectl.docker"
+            "/Applications/Docker.app/Contents/Resources/bin/hub-tool",
+            {
+              "target": "/usr/local/bin/hub-tool"
+            }
           ]
+        },
+        {
+          "bash_completion": [
+            "/Applications/Docker.app/Contents/Resources/etc/docker-compose.bash-completion"
+          ]
+        },
+        {
+          "postflight": null
+        },
+        {
+          "uninstall_postflight": null
         },
         {
           "zap": [
             {
               "trash": [
+                "/usr/local/bin/docker-compose.backup",
+                "/usr/local/bin/docker.backup",
+                "~/.docker",
+                "~/Library/Application Scripts/com.docker.helper",
+                "~/Library/Application Scripts/group.com.docker",
+                "~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/com.docker.helper.sfl*",
+                "~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/com.electron.dockerdesktop.sfl*",
+                "~/Library/Application Support/com.bugsnag.Bugsnag/com.docker.docker",
                 "~/Library/Application Support/Docker Desktop",
                 "~/Library/Caches/com.docker.docker",
                 "~/Library/Caches/com.plausiblelabs.crashreporter.data/com.docker.docker",
+                "~/Library/Caches/KSCrashReports/Docker",
                 "~/Library/Containers/com.docker.docker",
+                "~/Library/Containers/com.docker.helper",
                 "~/Library/Group Containers/group.com.docker",
                 "~/Library/HTTPStorages/com.docker.docker",
+                "~/Library/HTTPStorages/com.docker.docker.binarycookies",
                 "~/Library/Logs/Docker Desktop",
                 "~/Library/Preferences/com.docker.docker.plist",
                 "~/Library/Preferences/com.electron.docker-frontend.plist",
+                "~/Library/Preferences/com.electron.dockerdesktop.plist",
                 "~/Library/Saved Application State/com.electron.docker-frontend.savedState",
-                "~/.docker"
+                "~/Library/Saved Application State/com.electron.dockerdesktop.savedState"
+              ],
+              "rmdir": [
+                "~/Library/Caches/com.plausiblelabs.crashreporter.data",
+                "~/Library/Caches/KSCrashReports"
               ]
             }
           ]
         }
       ],
       "caveats": null,
+      "caveats_rosetta": null,
       "depends_on": {
         "macos": {
           ">=": [
-            "catalina"
+            "14"
           ]
         }
       },
       "conflicts_with": {
         "cask": [
-          "docker-toolbox"
+          "rancher"
         ]
       },
       "container": null,
+      "rename": [],
       "auto_updates": true,
       "deprecated": false,
       "deprecation_date": null,
       "deprecation_reason": null,
+      "deprecation_replacement_formula": null,
+      "deprecation_replacement_cask": null,
+      "deprecate_args": null,
       "disabled": false,
       "disable_date": null,
       "disable_reason": null,
-      "tap_git_head": "abc1234def5678901234567890abcdef12345678",
+      "disable_replacement_formula": null,
+      "disable_replacement_cask": null,
+      "disable_args": null,
+      "tap_git_head": "6ec275edb1eede5426548be9d4f92d278682990e",
       "languages": [],
-      "ruby_source_path": "Casks/d/docker.rb",
+      "ruby_source_path": "Casks/d/docker-desktop.rb",
       "ruby_source_checksum": {
-        "sha256": "1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b"
-      },
-      "installed": null,
-      "installed_time": null,
-      "outdated": false
+        "sha256": "16ffab47ec5be5404771e4981423f05d1685be3334f3e8a0dff13d7ce112d770"
+      }
     }
   ]
 }

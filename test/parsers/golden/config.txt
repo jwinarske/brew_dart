@@ -1,21 +1,22 @@
-HOMEBREW_VERSION: 4.4.23
+HOMEBREW_VERSION: 5.1.3
 ORIGIN: https://github.com/Homebrew/brew
-HEAD: abc1234def5678
+HEAD: 3a946229d190966cd725d5cc65e272d279a398ed
+Last commit: 2 days ago
+Branch: stable
+Core tap JSON: 01 Apr 19:22 UTC
+Core cask tap JSON: 01 Apr 19:22 UTC
 HOMEBREW_PREFIX: /opt/homebrew
-HOMEBREW_CELLAR: /opt/homebrew/Cellar
-HOMEBREW_CASKROOM: /opt/homebrew/Caskroom
-HOMEBREW_REPOSITORY: /opt/homebrew
-Core tap origin: https://github.com/Homebrew/homebrew-core
-Core tap HEAD: def4567abc8901
-Core tap branch: master
-Core tap JSON: 01 Apr 08:00 UTC
-HOMEBREW_RUBY: 3.3.0
-CPU: octa-core 64-bit arm_firestorm_icestorm
-Homebrew Ruby: 3.1.4 => /opt/homebrew/Library/Homebrew/vendor/portable-ruby/3.1.4/bin/ruby
-Clang: 15.0.0 build 1500
-Git: 2.49.0 => /opt/homebrew/bin/git
-OS: macOS 15.3-arm64
-macOS: 15.3-arm64
-Xcode: 15.4
-CLT: 15.4.0.0.1.1717440798
+HOMEBREW_CASK_OPTS: []
+HOMEBREW_DOWNLOAD_CONCURRENCY: 24
+HOMEBREW_FORBID_PACKAGES_FROM_PATHS: set
+HOMEBREW_MAKE_JOBS: 12
+Homebrew Ruby: 4.0.2 => /opt/homebrew/Library/Homebrew/vendor/portable-ruby/4.0.2_1/bin/ruby
+CPU: dodeca-core 64-bit arm_blizzard_avalanche
+Clang: 21.0.0 build 2100
+Git: 2.53.0 => /opt/homebrew/bin/git
+Curl: 8.7.1 => /usr/bin/curl
+macOS: 26.3.1-arm64
+CLT: 26.4.0.0.1774242506
+Xcode: 26.4
+Metal Toolchain: N/A
 Rosetta 2: false
