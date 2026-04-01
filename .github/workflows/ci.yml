@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   test:
@@ -25,7 +24,7 @@ jobs:
       - name: Run unit tests with coverage
         run: |
           dart pub global activate coverage
-          dart test --coverage=coverage
+          dart test --exclude-tags integration --coverage=coverage
           dart pub global run coverage:format_coverage \
             --lcov --in=coverage --out=coverage/lcov.info \
             --report-on=lib
@@ -39,4 +38,4 @@ jobs:
         with:
           files: coverage/lcov.info
           fail_ci_if_error: true
-          use_oidc: true
+          token: ${{ secrets.CODECOV_TOKEN }}

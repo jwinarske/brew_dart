@@ -27,7 +27,8 @@ jobs:
         run: |
           brew info --json=v2 git > test/parsers/golden/ci_info_v2.json
           brew search node > test/parsers/golden/ci_search.txt
-          brew services list > test/parsers/golden/ci_services.txt || true
+          brew services list > test/parsers/golden/ci_services.txt
+          true
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
