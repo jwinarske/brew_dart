@@ -1,0 +1,82 @@
+[
+  {
+    "name": "homebrew/core",
+    "user": "Homebrew",
+    "repo": "homebrew-core",
+    "path": "/opt/homebrew/Library/Taps/homebrew/homebrew-core",
+    "installed": true,
+    "official": true,
+    "formula_names": [
+      "a2ps",
+      "a52dec",
+      "aacgain",
+      "aalib",
+      "aamath"
+    ],
+    "formula_files": [
+      "/opt/homebrew/Library/Taps/homebrew/homebrew-core/Formula/a/a2ps.rb",
+      "/opt/homebrew/Library/Taps/homebrew/homebrew-core/Formula/a/a52dec.rb",
+      "/opt/homebrew/Library/Taps/homebrew/homebrew-core/Formula/a/aacgain.rb",
+      "/opt/homebrew/Library/Taps/homebrew/homebrew-core/Formula/a/aalib.rb",
+      "/opt/homebrew/Library/Taps/homebrew/homebrew-core/Formula/a/aamath.rb"
+    ],
+    "cask_tokens": [],
+    "cask_files": [],
+    "command_files": [],
+    "formula_count": 7142,
+    "cask_count": 0,
+    "remote": "https://github.com/Homebrew/homebrew-core",
+    "custom_remote": false,
+    "private": false
+  },
+  {
+    "name": "homebrew/cask",
+    "user": "Homebrew",
+    "repo": "homebrew-cask",
+    "path": "/opt/homebrew/Library/Taps/homebrew/homebrew-cask",
+    "installed": true,
+    "official": true,
+    "formula_names": [],
+    "formula_files": [],
+    "cask_tokens": [
+      "1clipboard",
+      "1password",
+      "1password-cli",
+      "4k-stogram",
+      "4k-video-downloader"
+    ],
+    "cask_files": [
+      "/opt/homebrew/Library/Taps/homebrew/homebrew-cask/Casks/1/1clipboard.rb",
+      "/opt/homebrew/Library/Taps/homebrew/homebrew-cask/Casks/1/1password.rb",
+      "/opt/homebrew/Library/Taps/homebrew/homebrew-cask/Casks/1/1password-cli.rb",
+      "/opt/homebrew/Library/Taps/homebrew/homebrew-cask/Casks/4/4k-stogram.rb",
+      "/opt/homebrew/Library/Taps/homebrew/homebrew-cask/Casks/4/4k-video-downloader.rb"
+    ],
+    "command_files": [],
+    "formula_count": 0,
+    "cask_count": 5246,
+    "remote": "https://github.com/Homebrew/homebrew-cask",
+    "custom_remote": false,
+    "private": false
+  },
+  {
+    "name": "homebrew/bundle",
+    "user": "Homebrew",
+    "repo": "homebrew-bundle",
+    "path": "/opt/homebrew/Library/Taps/homebrew/homebrew-bundle",
+    "installed": true,
+    "official": true,
+    "formula_names": [],
+    "formula_files": [],
+    "cask_tokens": [],
+    "cask_files": [],
+    "command_files": [
+      "/opt/homebrew/Library/Taps/homebrew/homebrew-bundle/cmd/bundle.rb"
+    ],
+    "formula_count": 0,
+    "cask_count": 0,
+    "remote": "https://github.com/Homebrew/homebrew-bundle",
+    "custom_remote": false,
+    "private": false
+  }
+]

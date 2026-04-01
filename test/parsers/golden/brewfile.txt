@@ -1,0 +1,8 @@
+tap "homebrew/bundle"
+tap "homebrew/cask"
+brew "git"
+brew "node"
+brew "openssl@3", args: ["force"]
+cask "docker"
+cask "visual-studio-code"
+mas "Xcode", id: 497799835

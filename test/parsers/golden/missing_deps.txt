@@ -1,0 +1,2 @@
+node: icu4c
+git: pcre2
