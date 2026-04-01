@@ -37,7 +37,7 @@ void main() {
       expect(results.first.isFormula, isFalse);
 
       final cask = results.first.cask!;
-      expect(cask.token, 'docker');
+      expect(cask.token, 'docker-desktop');
       expect(cask.desc, isNotEmpty);
       expect(cask.homepage, isNotEmpty);
       expect(cask.version, isNotEmpty);

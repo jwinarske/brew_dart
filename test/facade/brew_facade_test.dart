@@ -49,7 +49,7 @@ void main() {
     test('parses config output', () async {
       fakeCli.whenRun('config', stdout: loadGoldenText('config.txt'));
       final config = await brew.config();
-      expect(config.homebrewVersion, '4.4.23');
+      expect(config.homebrewVersion, '5.1.3');
       expect(config.prefix, '/opt/homebrew');
     });
   });

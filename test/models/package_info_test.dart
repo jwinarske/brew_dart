@@ -24,7 +24,7 @@ void main() {
 
       expect(info.isCask, isTrue);
       expect(info.isFormula, isFalse);
-      expect(info.name, 'docker');
+      expect(info.name, 'docker-desktop');
       expect(info.desc, isNotEmpty);
       expect(info.homepage, isNotEmpty);
     });

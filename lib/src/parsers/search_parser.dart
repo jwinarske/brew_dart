@@ -27,31 +27,48 @@ class SearchParser {
       return const SearchResult();
     }
 
-    var currentSection = _Section.none;
+    // Detect format: header-based (==> Formulae / ==> Casks) vs
+    // blank-line-separated (new brew format with no section headers).
+    final hasHeaders =
+        output.contains('==> Formulae') || output.contains('==> Casks');
 
-    for (final line in output.split('\n')) {
-      final trimmed = line.trim();
-      if (trimmed.isEmpty) continue;
-
-      if (trimmed.startsWith('==> Formulae')) {
-        currentSection = _Section.formulae;
-        continue;
+    if (hasHeaders) {
+      var currentSection = _Section.none;
+      for (final line in output.split('\n')) {
+        final trimmed = line.trim();
+        if (trimmed.isEmpty) continue;
+        if (trimmed.startsWith('==> Formulae')) {
+          currentSection = _Section.formulae;
+          continue;
+        }
+        if (trimmed.startsWith('==> Casks')) {
+          currentSection = _Section.casks;
+          continue;
+        }
+        if (trimmed.startsWith('==>')) continue;
+        switch (currentSection) {
+          case _Section.formulae:
+            formulae.add(trimmed);
+          case _Section.casks:
+            casks.add(trimmed);
+          case _Section.none:
+            formulae.add(trimmed);
+        }
       }
-      if (trimmed.startsWith('==> Casks')) {
-        currentSection = _Section.casks;
-        continue;
-      }
-      // Skip other section headers
-      if (trimmed.startsWith('==>')) continue;
-
-      switch (currentSection) {
-        case _Section.formulae:
-          formulae.add(trimmed);
-        case _Section.casks:
+    } else {
+      // Blank-line-separated: first block = formulae, second block = casks.
+      var seenBlank = false;
+      for (final line in output.split('\n')) {
+        final trimmed = line.trim();
+        if (trimmed.isEmpty) {
+          if (formulae.isNotEmpty) seenBlank = true;
+          continue;
+        }
+        if (seenBlank) {
           casks.add(trimmed);
-        case _Section.none:
-          // Lines before any section header — treat as formulae
+        } else {
           formulae.add(trimmed);
+        }
       }
     }
 
