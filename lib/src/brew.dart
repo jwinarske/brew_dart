@@ -7,14 +7,14 @@ import 'cli/brew_process_result.dart';
 import 'exceptions.dart';
 import 'models/batch_result.dart';
 import 'models/brew_config.dart';
+import 'models/brewfile.dart';
+import 'models/bundle_result.dart';
 import 'models/dependency.dart';
 import 'models/doctor_report.dart';
 import 'models/installed_package.dart';
 import 'models/outdated_package.dart';
 import 'models/package_info.dart';
 import 'models/search_result.dart';
-import 'models/brewfile.dart';
-import 'models/bundle_result.dart';
 import 'models/service.dart';
 import 'models/tap.dart';
 import 'models/update_result.dart';
@@ -55,14 +55,14 @@ class Brew {
     ListParser listParser = const ListParser(),
     ServicesParser servicesParser = const ServicesParser(),
     BrewfileParser brewfileParser = const BrewfileParser(),
-  })  : _cli = cli ?? BrewCli(),
-        _configParser = configParser,
-        _doctorParser = doctorParser,
-        _jsonV2Parser = jsonV2Parser,
-        _searchParser = searchParser,
-        _listParser = listParser,
-        _servicesParser = servicesParser,
-        _brewfileParser = brewfileParser;
+  }) : _cli = cli ?? BrewCli(),
+       _configParser = configParser,
+       _doctorParser = doctorParser,
+       _jsonV2Parser = jsonV2Parser,
+       _searchParser = searchParser,
+       _listParser = listParser,
+       _servicesParser = servicesParser,
+       _brewfileParser = brewfileParser;
 
   /// The underlying CLI runner, exposed for advanced use cases.
   BrewCli get cli => _cli;
@@ -70,10 +70,9 @@ class Brew {
   /// Check if brew is installed and accessible.
   Future<bool> isInstalled() async {
     try {
-      final result = await _cli.run(
-        ['--version'],
-        timeout: const Duration(seconds: 10),
-      );
+      final result = await _cli.run([
+        '--version',
+      ], timeout: const Duration(seconds: 10));
       return result.isSuccess;
     } on BrewNotInstalledException {
       return false;
@@ -86,10 +85,9 @@ class Brew {
   ///
   /// Throws [BrewNotInstalledException] if brew is not available.
   Future<String> version() async {
-    final result = await _cli.run(
-      ['--version'],
-      timeout: const Duration(seconds: 10),
-    );
+    final result = await _cli.run([
+      '--version',
+    ], timeout: const Duration(seconds: 10));
     if (!result.isSuccess) {
       throw BrewCommandException.fromResult(result);
     }
@@ -120,20 +118,18 @@ class Brew {
   /// Note: `brew doctor` returns exit code 1 when there are warnings,
   /// so we don't throw on non-zero exit code here.
   Future<DoctorReport> doctor() async {
-    final result = await _cli.run(
-      ['doctor'],
-      timeout: const Duration(minutes: 2),
-    );
+    final result = await _cli.run([
+      'doctor',
+    ], timeout: const Duration(minutes: 2));
     // brew doctor returns exit code 1 for warnings, which is normal.
     return _doctorParser.parse(result.stdout);
   }
 
   /// Homebrew prefix path (e.g. `/opt/homebrew`, `/usr/local`).
   Future<String> prefix() async {
-    final result = await _cli.run(
-      ['--prefix'],
-      timeout: const Duration(seconds: 10),
-    );
+    final result = await _cli.run([
+      '--prefix',
+    ], timeout: const Duration(seconds: 10));
     if (!result.isSuccess) {
       throw BrewCommandException.fromResult(result);
     }
@@ -142,10 +138,9 @@ class Brew {
 
   /// Homebrew Cellar path (e.g. `/opt/homebrew/Cellar`).
   Future<String> cellarPath() async {
-    final result = await _cli.run(
-      ['--cellar'],
-      timeout: const Duration(seconds: 10),
-    );
+    final result = await _cli.run([
+      '--cellar',
+    ], timeout: const Duration(seconds: 10));
     if (!result.isSuccess) {
       throw BrewCommandException.fromResult(result);
     }
@@ -279,12 +274,14 @@ class Brew {
     final results = <InstallResult>[];
 
     if (parallel) {
-      results.addAll(await _runParallel(
-        packages,
-        concurrency,
-        (pkg) => install(pkg, cask: cask, force: force),
-        onEach,
-      ));
+      results.addAll(
+        await _runParallel(
+          packages,
+          concurrency,
+          (pkg) => install(pkg, cask: cask, force: force),
+          onEach,
+        ),
+      );
     } else {
       for (final pkg in packages) {
         final result = await install(pkg, cask: cask, force: force);
@@ -308,11 +305,7 @@ class Brew {
   ///
   /// Uses `Process.start` to stream stdout/stderr line by line.
   Stream<ProcessOutput> installStream(String package, {bool cask = false}) {
-    return _cli.stream([
-      'install',
-      if (cask) '--cask',
-      package,
-    ]);
+    return _cli.stream(['install', if (cask) '--cask', package]);
   }
 
   /// Uninstall a single package.
@@ -382,7 +375,7 @@ class Brew {
       'cleanup',
       if (dryRun) '--dry-run',
       if (scrub) '-s',
-      if (package != null) package,
+      ?package,
     ];
     final stopwatch = Stopwatch()..start();
     final result = await _cli.run(args);
@@ -400,11 +393,7 @@ class Brew {
   ///
   /// Uses `brew upgrade [--cask] <package>`.
   Future<UpgradeResult> upgrade(String package, {bool cask = false}) async {
-    final args = <String>[
-      'upgrade',
-      if (cask) '--cask',
-      package,
-    ];
+    final args = <String>['upgrade', if (cask) '--cask', package];
     final stopwatch = Stopwatch()..start();
     final result = await _cli.run(args);
     stopwatch.stop();
@@ -461,11 +450,7 @@ class Brew {
 
   /// Stream upgrade output in real-time.
   Stream<ProcessOutput> upgradeStream(String package, {bool cask = false}) {
-    return _cli.stream([
-      'upgrade',
-      if (cask) '--cask',
-      package,
-    ]);
+    return _cli.stream(['upgrade', if (cask) '--cask', package]);
   }
 
   /// Fast list of installed package names via `brew list`.
@@ -509,7 +494,7 @@ class Brew {
   /// Show dependencies for a formula.
   ///
   /// Uses `brew deps [--tree] [--installed] [--include-build]
-  /// [--include-optional] [--include-test] <formula>`.
+  /// [--include-optional] [--include-test] `<formula>`.
   Future<List<String>> deps(
     String formula, {
     bool tree = false,
@@ -599,20 +584,14 @@ class Brew {
       throw BrewCommandException.fromResult(result);
     }
     final json = jsonDecode(result.stdout) as List<dynamic>;
-    return json
-        .map((e) => Tap.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return json.map((e) => Tap.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   /// Add a tap.
   ///
   /// Uses `brew tap <user/repo> [<url>]`.
   Future<void> tap(String name, {String? url}) async {
-    final args = <String>[
-      'tap',
-      name,
-      if (url != null) url,
-    ];
+    final args = <String>['tap', name, ?url];
     final result = await _cli.run(args);
     if (!result.isSuccess) {
       throw BrewCommandException.fromResult(result);
@@ -623,11 +602,7 @@ class Brew {
   ///
   /// Uses `brew untap [--force] <user/repo>`.
   Future<void> untap(String name, {bool force = false}) async {
-    final args = <String>[
-      'untap',
-      if (force) '--force',
-      name,
-    ];
+    final args = <String>['untap', if (force) '--force', name];
     final result = await _cli.run(args);
     if (!result.isSuccess) {
       throw BrewCommandException.fromResult(result);
@@ -642,10 +617,7 @@ class Brew {
   ///
   /// Uses `brew update [--force]`.
   Future<UpdateResult> update({bool force = false}) async {
-    final args = <String>[
-      'update',
-      if (force) '--force',
-    ];
+    final args = <String>['update', if (force) '--force'];
     final stopwatch = Stopwatch()..start();
     final result = await _cli.run(
       args,
@@ -665,10 +637,7 @@ class Brew {
   /// Stream `brew update` output in real-time.
   Stream<ProcessOutput> updateStream({bool force = false}) {
     return _cli.stream(
-      [
-        'update',
-        if (force) '--force',
-      ],
+      ['update', if (force) '--force'],
       extraEnv: {'HOMEBREW_NO_AUTO_UPDATE': '0'},
     );
   }
@@ -697,11 +666,7 @@ class Brew {
   ///
   /// Uses `brew unlink [--dry-run] <formula>`.
   Future<void> unlink(String formula, {bool dryRun = false}) async {
-    final args = <String>[
-      'unlink',
-      if (dryRun) '--dry-run',
-      formula,
-    ];
+    final args = <String>['unlink', if (dryRun) '--dry-run', formula];
     final result = await _cli.run(args);
     if (!result.isSuccess) {
       throw BrewCommandException.fromResult(result);
@@ -827,10 +792,7 @@ class Brew {
       if (verbose) '--verbose',
     ];
     final stopwatch = Stopwatch()..start();
-    final result = await _cli.run(
-      args,
-      timeout: const Duration(minutes: 30),
-    );
+    final result = await _cli.run(args, timeout: const Duration(minutes: 30));
     stopwatch.stop();
     return BundleResult(
       success: result.isSuccess,
@@ -846,11 +808,7 @@ class Brew {
   /// Uses `brew bundle check [--file=<path>]`.
   /// Returns a [BundleCheckResult] indicating whether all entries are satisfied.
   Future<BundleCheckResult> bundleCheck({String? file}) async {
-    final args = <String>[
-      'bundle',
-      'check',
-      if (file != null) '--file=$file',
-    ];
+    final args = <String>['bundle', 'check', if (file != null) '--file=$file'];
     final result = await _cli.run(args);
     // Exit code 1 means unsatisfied entries, not an error.
     final missing = <String>[];

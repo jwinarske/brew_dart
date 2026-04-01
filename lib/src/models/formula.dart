@@ -5,11 +5,11 @@ part 'formula.g.dart';
 
 /// Version information for a formula.
 @freezed
-class FormulaVersions with _$FormulaVersions {
+abstract class FormulaVersions with _$FormulaVersions {
   const factory FormulaVersions({
     required String stable,
     String? head,
-    String? bottle,
+    bool? bottle,
   }) = _FormulaVersions;
 
   factory FormulaVersions.fromJson(Map<String, dynamic> json) =>
@@ -18,17 +18,16 @@ class FormulaVersions with _$FormulaVersions {
 
 /// A specific installed version of a formula.
 @freezed
-class InstalledVersion with _$InstalledVersion {
+abstract class InstalledVersion with _$InstalledVersion {
   const factory InstalledVersion({
     required String version,
     @JsonKey(name: 'used_options') List<String>? usedOptions,
     @JsonKey(name: 'built_as_bottle') bool? builtAsBottle,
     @JsonKey(name: 'poured_from_bottle') bool? pouredFromBottle,
-    String? time,
+    int? time,
     @JsonKey(name: 'runtime_dependencies')
     List<RuntimeDependency>? runtimeDependencies,
-    @JsonKey(name: 'installed_as_dependency')
-    bool? installedAsDependency,
+    @JsonKey(name: 'installed_as_dependency') bool? installedAsDependency,
     @JsonKey(name: 'installed_on_request') bool? installedOnRequest,
   }) = _InstalledVersion;
 
@@ -38,11 +37,11 @@ class InstalledVersion with _$InstalledVersion {
 
 /// A runtime dependency as reported in installed version info.
 @freezed
-class RuntimeDependency with _$RuntimeDependency {
+abstract class RuntimeDependency with _$RuntimeDependency {
   const factory RuntimeDependency({
     @JsonKey(name: 'full_name') required String fullName,
     String? version,
-    String? revision,
+    int? revision,
     @JsonKey(name: 'pkg_version') String? pkgVersion,
     @JsonKey(name: 'declared_directly') bool? declaredDirectly,
   }) = _RuntimeDependency;
@@ -53,7 +52,7 @@ class RuntimeDependency with _$RuntimeDependency {
 
 /// A Homebrew formula as returned by `brew info --json=v2`.
 @freezed
-class Formula with _$Formula {
+abstract class Formula with _$Formula {
   const factory Formula({
     required String name,
     @JsonKey(name: 'full_name') required String fullName,
@@ -62,13 +61,13 @@ class Formula with _$Formula {
     String? license,
     required String homepage,
     required FormulaVersions versions,
-    List<String>? urls,
+    Map<String, dynamic>? urls,
     int? revision,
     @JsonKey(name: 'version_scheme') int? versionScheme,
-    @Default(false) bool bottle,
+    Map<String, dynamic>? bottle,
     @JsonKey(name: 'keg_only') @Default(false) bool kegOnly,
     @JsonKey(name: 'keg_only_reason') Map<String, dynamic>? kegOnlyReason,
-    Map<String, dynamic>? options,
+    dynamic options,
     @Default([]) List<String> dependencies,
     @JsonKey(name: 'build_dependencies')
     @Default([])

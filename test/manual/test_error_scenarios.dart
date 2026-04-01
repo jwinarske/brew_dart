@@ -32,7 +32,9 @@ void main() async {
 
   // Test 3: Uninstall package that isn't installed
   print('\n=== Test 3: Uninstall non-installed package ===');
-  final uninstallResult = await brew.uninstall('this_package_does_not_exist_xyz_123');
+  final uninstallResult = await brew.uninstall(
+    'this_package_does_not_exist_xyz_123',
+  );
   print('  Success: ${uninstallResult.success}');
   print('  Exit code: ${uninstallResult.exitCode}');
   assert(!uninstallResult.success, 'Expected uninstall to fail');

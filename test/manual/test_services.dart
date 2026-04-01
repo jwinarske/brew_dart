@@ -25,9 +25,11 @@ void main() async {
   }
 
   for (final s in services) {
-    print('  ${s.name}: ${s.status.name}'
-        '${s.user != null ? ' (user: ${s.user})' : ''}'
-        '${s.file != null ? ' [${s.file}]' : ''}');
+    print(
+      '  ${s.name}: ${s.status.name}'
+      '${s.user != null ? ' (user: ${s.user})' : ''}'
+      '${s.file != null ? ' [${s.file}]' : ''}',
+    );
   }
 
   // Find a stopped service to test with

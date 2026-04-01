@@ -5,7 +5,7 @@ part 'cask.g.dart';
 
 /// A Homebrew cask as returned by `brew info --json=v2`.
 @freezed
-class Cask with _$Cask {
+abstract class Cask with _$Cask {
   const factory Cask({
     required String token,
     @JsonKey(name: 'full_token') String? fullToken,

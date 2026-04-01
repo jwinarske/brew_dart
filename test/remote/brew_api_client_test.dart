@@ -66,8 +66,8 @@ void main() {
             'homepage': 'https://git-scm.com',
             'versions': {'stable': '2.49.0'},
             'dependencies': ['gettext', 'pcre2'],
-            'build_dependencies': [],
-            'optional_dependencies': [],
+            'build_dependencies': <String>[],
+            'optional_dependencies': <String>[],
             'keg_only': false,
             'deprecated': false,
             'disabled': false,
@@ -135,8 +135,10 @@ void main() {
       );
 
       await client.allFormulae();
-      expect(capturedUrl.toString(),
-          'https://formulae.brew.sh/api/formula.json');
+      expect(
+        capturedUrl.toString(),
+        'https://formulae.brew.sh/api/formula.json',
+      );
     });
   });
 }

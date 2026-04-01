@@ -31,8 +31,10 @@ void main() {
 
   group('version', () {
     test('extracts version number from output', () async {
-      fakeCli.whenRun('--version',
-          stdout: 'Homebrew 4.4.23\nHomebrew/homebrew-core (no Git)\n');
+      fakeCli.whenRun(
+        '--version',
+        stdout: 'Homebrew 4.4.23\nHomebrew/homebrew-core (no Git)\n',
+      );
       final version = await brew.version();
       expect(version, '4.4.23');
     });
@@ -54,15 +56,17 @@ void main() {
 
   group('doctor', () {
     test('parses clean doctor output', () async {
-      fakeCli.whenRun('doctor',
-          stdout: 'Your system is ready to brew.\n');
+      fakeCli.whenRun('doctor', stdout: 'Your system is ready to brew.\n');
       final report = await brew.doctor();
       expect(report.healthy, isTrue);
     });
 
     test('parses doctor with warnings (exit code 1 is normal)', () async {
-      fakeCli.whenRunFails('doctor', exitCode: 1,
-          stdout: loadGoldenText('doctor_warnings.txt'));
+      fakeCli.whenRunFails(
+        'doctor',
+        exitCode: 1,
+        stdout: loadGoldenText('doctor_warnings.txt'),
+      );
       final report = await brew.doctor();
       expect(report.healthy, isFalse);
       expect(report.diagnostics, isNotEmpty);
@@ -95,8 +99,10 @@ void main() {
     });
 
     test('throws PackageNotFoundException when empty', () async {
-      fakeCli.whenRun('info nonexistent --json=v2',
-          stdout: '{"formulae":[],"casks":[]}');
+      fakeCli.whenRun(
+        'info nonexistent --json=v2',
+        stdout: '{"formulae":[],"casks":[]}',
+      );
       expect(
         () => brew.info('nonexistent'),
         throwsA(isA<PackageNotFoundException>()),
@@ -138,8 +144,10 @@ void main() {
     });
 
     test('returns empty for no results', () async {
-      fakeCli.whenRunFails('search xyznonexistent',
-          stderr: 'No formulae or casks found for "xyznonexistent".');
+      fakeCli.whenRunFails(
+        'search xyznonexistent',
+        stderr: 'No formulae or casks found for "xyznonexistent".',
+      );
       final result = await brew.search('xyznonexistent');
       expect(result.isEmpty, isTrue);
     });
@@ -149,8 +157,10 @@ void main() {
 
   group('install', () {
     test('returns success result', () async {
-      fakeCli.whenRun('install ripgrep',
-          stdout: 'Installing ripgrep...\nDone.');
+      fakeCli.whenRun(
+        'install ripgrep',
+        stdout: 'Installing ripgrep...\nDone.',
+      );
       final result = await brew.install('ripgrep');
       expect(result.success, isTrue);
       expect(result.package, 'ripgrep');
@@ -158,8 +168,10 @@ void main() {
     });
 
     test('returns failure result without throwing', () async {
-      fakeCli.whenRunFails('install nonexistent',
-          stderr: 'Error: No available formula');
+      fakeCli.whenRunFails(
+        'install nonexistent',
+        stderr: 'Error: No available formula',
+      );
       final result = await brew.install('nonexistent');
       expect(result.success, isFalse);
       expect(result.errorMessage, contains('No available formula'));
@@ -168,10 +180,12 @@ void main() {
     test('passes --cask and --force flags', () async {
       fakeCli.whenRun('install --cask --force docker', stdout: 'Done.');
       await brew.install('docker', cask: true, force: true);
-      expect(
-        fakeCli.executedCommands.last,
-        ['install', '--cask', '--force', 'docker'],
-      );
+      expect(fakeCli.executedCommands.last, [
+        'install',
+        '--cask',
+        '--force',
+        'docker',
+      ]);
     });
   });
 
@@ -193,18 +207,17 @@ void main() {
       fakeCli.whenRun('install y', stdout: 'ok');
 
       final called = <String>[];
-      await brew.installAll(
-        ['x', 'y'],
-        onEach: (pkg, _) => called.add(pkg),
-      );
+      await brew.installAll(['x', 'y'], onEach: (pkg, _) => called.add(pkg));
       expect(called, ['x', 'y']);
     });
   });
 
   group('installStream', () {
     test('yields output lines', () async {
-      fakeCli.whenRun('install hello',
-          stdout: 'Downloading...\nInstalling...\nDone.');
+      fakeCli.whenRun(
+        'install hello',
+        stdout: 'Downloading...\nInstalling...\nDone.',
+      );
       final lines = <String>[];
       await for (final output in brew.installStream('hello')) {
         lines.add(output.line);
@@ -224,10 +237,11 @@ void main() {
     test('passes --ignore-dependencies flag', () async {
       fakeCli.whenRun('uninstall --ignore-dependencies icu4c', stdout: 'ok');
       await brew.uninstall('icu4c', ignoreDependencies: true);
-      expect(
-        fakeCli.executedCommands.last,
-        ['uninstall', '--ignore-dependencies', 'icu4c'],
-      );
+      expect(fakeCli.executedCommands.last, [
+        'uninstall',
+        '--ignore-dependencies',
+        'icu4c',
+      ]);
     });
   });
 
@@ -241,10 +255,7 @@ void main() {
     test('passes --dry-run and -s flags', () async {
       fakeCli.whenRun('cleanup --dry-run -s', stdout: 'Would remove...');
       await brew.cleanup(dryRun: true, scrub: true);
-      expect(
-        fakeCli.executedCommands.last,
-        ['cleanup', '--dry-run', '-s'],
-      );
+      expect(fakeCli.executedCommands.last, ['cleanup', '--dry-run', '-s']);
     });
   });
 
@@ -325,10 +336,7 @@ void main() {
     test('runs tap command', () async {
       fakeCli.whenRun('tap homebrew/cask-fonts', stdout: 'Tapped.');
       await brew.tap('homebrew/cask-fonts');
-      expect(
-        fakeCli.executedCommands.last,
-        ['tap', 'homebrew/cask-fonts'],
-      );
+      expect(fakeCli.executedCommands.last, ['tap', 'homebrew/cask-fonts']);
     });
   });
 
@@ -336,10 +344,7 @@ void main() {
     test('runs untap command', () async {
       fakeCli.whenRun('untap homebrew/cask-fonts', stdout: 'Untapped.');
       await brew.untap('homebrew/cask-fonts');
-      expect(
-        fakeCli.executedCommands.last,
-        ['untap', 'homebrew/cask-fonts'],
-      );
+      expect(fakeCli.executedCommands.last, ['untap', 'homebrew/cask-fonts']);
     });
   });
 
@@ -357,19 +362,22 @@ void main() {
     test('link passes correct flags', () async {
       fakeCli.whenRun('link --overwrite --force openssl@3', stdout: 'Linked.');
       await brew.link('openssl@3', overwrite: true, force: true);
-      expect(
-        fakeCli.executedCommands.last,
-        ['link', '--overwrite', '--force', 'openssl@3'],
-      );
+      expect(fakeCli.executedCommands.last, [
+        'link',
+        '--overwrite',
+        '--force',
+        'openssl@3',
+      ]);
     });
 
     test('unlink passes --dry-run', () async {
       fakeCli.whenRun('unlink --dry-run openssl@3', stdout: 'Would unlink.');
       await brew.unlink('openssl@3', dryRun: true);
-      expect(
-        fakeCli.executedCommands.last,
-        ['unlink', '--dry-run', 'openssl@3'],
-      );
+      expect(fakeCli.executedCommands.last, [
+        'unlink',
+        '--dry-run',
+        'openssl@3',
+      ]);
     });
   });
 
@@ -395,8 +403,10 @@ void main() {
 
   group('services', () {
     test('returns parsed service list', () async {
-      fakeCli.whenRun('services list',
-          stdout: loadGoldenText('services_list.txt'));
+      fakeCli.whenRun(
+        'services list',
+        stdout: loadGoldenText('services_list.txt'),
+      );
       final services = await brew.services();
       expect(services, isNotEmpty);
       expect(services.first.name, isNotEmpty);
@@ -405,28 +415,27 @@ void main() {
     test('startService runs correct command', () async {
       fakeCli.whenRun('services start postgresql@16', stdout: 'Started.');
       await brew.startService('postgresql@16');
-      expect(
-        fakeCli.executedCommands.last,
-        ['services', 'start', 'postgresql@16'],
-      );
+      expect(fakeCli.executedCommands.last, [
+        'services',
+        'start',
+        'postgresql@16',
+      ]);
     });
 
     test('stopService runs correct command', () async {
       fakeCli.whenRun('services stop postgresql@16', stdout: 'Stopped.');
       await brew.stopService('postgresql@16');
-      expect(
-        fakeCli.executedCommands.last,
-        ['services', 'stop', 'postgresql@16'],
-      );
+      expect(fakeCli.executedCommands.last, [
+        'services',
+        'stop',
+        'postgresql@16',
+      ]);
     });
 
     test('restartService runs correct command', () async {
       fakeCli.whenRun('services restart redis', stdout: 'Restarted.');
       await brew.restartService('redis');
-      expect(
-        fakeCli.executedCommands.last,
-        ['services', 'restart', 'redis'],
-      );
+      expect(fakeCli.executedCommands.last, ['services', 'restart', 'redis']);
     });
   });
 
@@ -449,8 +458,10 @@ void main() {
 
   group('bundleDump', () {
     test('returns brewfile content', () async {
-      fakeCli.whenRun('bundle dump',
-          stdout: 'tap "homebrew/core"\nbrew "git"\n');
+      fakeCli.whenRun(
+        'bundle dump',
+        stdout: 'tap "homebrew/core"\nbrew "git"\n',
+      );
       final content = await brew.bundleDump();
       expect(content, contains('brew "git"'));
     });
@@ -466,17 +477,21 @@ void main() {
 
   group('bundleCheck', () {
     test('returns satisfied when all installed', () async {
-      fakeCli.whenRun('bundle check',
-          stdout: "The Brewfile's dependencies are satisfied.\n");
+      fakeCli.whenRun(
+        'bundle check',
+        stdout: "The Brewfile's dependencies are satisfied.\n",
+      );
       final result = await brew.bundleCheck();
       expect(result.satisfied, isTrue);
       expect(result.missingEntries, isEmpty);
     });
 
     test('returns unsatisfied with missing entries', () async {
-      fakeCli.whenRunFails('bundle check',
-          stdout:
-              'brew "ripgrep" needs to be installed.\nThe Brewfile\'s dependencies are not satisfied.\n');
+      fakeCli.whenRunFails(
+        'bundle check',
+        stdout:
+            'brew "ripgrep" needs to be installed.\nThe Brewfile\'s dependencies are not satisfied.\n',
+      );
       final result = await brew.bundleCheck();
       expect(result.satisfied, isFalse);
       expect(result.missingEntries, isNotEmpty);

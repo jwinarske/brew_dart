@@ -7,7 +7,7 @@ part 'dependency.g.dart';
 ///
 /// Output format: `<formula>: <missing_dep1> <missing_dep2> ...`
 @freezed
-class MissingDependency with _$MissingDependency {
+abstract class MissingDependency with _$MissingDependency {
   const factory MissingDependency({
     /// The formula that has missing dependencies.
     required String formula,

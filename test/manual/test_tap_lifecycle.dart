@@ -18,8 +18,10 @@ void main() async {
   print('=== Current taps ===');
   final taps = await brew.taps();
   for (final t in taps) {
-    print('  ${t.name} (formulae: ${t.formulaCount ?? 0}, '
-        'casks: ${t.caskCount ?? 0})');
+    print(
+      '  ${t.name} (formulae: ${t.formulaCount ?? 0}, '
+      'casks: ${t.caskCount ?? 0})',
+    );
   }
 
   final alreadyTapped = taps.any((t) => t.name == testTap);

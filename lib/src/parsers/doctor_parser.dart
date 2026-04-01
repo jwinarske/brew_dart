@@ -12,6 +12,10 @@ class DoctorParser {
   static final _errorPattern = RegExp(r'^Error:\s*(.*)$');
 
   DoctorReport parse(String output) {
+    if (output.trim().isEmpty) {
+      return const DoctorReport(healthy: false, diagnostics: []);
+    }
+
     final lines = output.split('\n');
 
     if (output.contains('Your system is ready to brew')) {
@@ -25,11 +29,13 @@ class DoctorParser {
 
     void flushCurrent() {
       if (currentTitle != null && currentSeverity != null) {
-        diagnostics.add(Diagnostic(
-          severity: currentSeverity!,
-          title: currentTitle!,
-          details: currentDetails,
-        ));
+        diagnostics.add(
+          Diagnostic(
+            severity: currentSeverity!,
+            title: currentTitle!,
+            details: currentDetails,
+          ),
+        );
       }
       currentSeverity = null;
       currentTitle = null;
@@ -55,9 +61,6 @@ class DoctorParser {
 
     flushCurrent();
 
-    return DoctorReport(
-      healthy: diagnostics.isEmpty,
-      diagnostics: diagnostics,
-    );
+    return DoctorReport(healthy: diagnostics.isEmpty, diagnostics: diagnostics);
   }
 }

@@ -37,11 +37,7 @@ class BrewfileParser {
       final type = _parseType(typeStr);
       final options = _parseOptions(rest);
 
-      entries.add(BrewfileEntry(
-        type: type,
-        name: name,
-        options: options,
-      ));
+      entries.add(BrewfileEntry(type: type, name: name, options: options));
     }
 
     return Brewfile(entries: entries);
@@ -74,9 +70,7 @@ class BrewfileParser {
     if (cleaned.isEmpty) return {};
 
     // Match key: value pairs
-    final pairPattern = RegExp(
-      r'''(\w+):\s*(.+?)(?=,\s*\w+:|$)''',
-    );
+    final pairPattern = RegExp(r'''(\w+):\s*(.+?)(?=,\s*\w+:|$)''');
 
     for (final match in pairPattern.allMatches(cleaned)) {
       final key = match.group(1)!;

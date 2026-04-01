@@ -23,7 +23,9 @@ void main() async {
     }
   }
 
-  print('\n=== Batch installing ${packages.length} packages (parallel, concurrency=2) ===');
+  print(
+    '\n=== Batch installing ${packages.length} packages (parallel, concurrency=2) ===',
+  );
   final result = await brew.installAll(
     packages,
     parallel: true,

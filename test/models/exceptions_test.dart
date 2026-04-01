@@ -40,10 +40,11 @@ void main() {
     });
 
     test('fromExitCode creates exception from args', () {
-      final e = BrewCommandException.fromExitCode(
-        2,
-        ['install', '--cask', 'docker'],
-      );
+      final e = BrewCommandException.fromExitCode(2, [
+        'install',
+        '--cask',
+        'docker',
+      ]);
       expect(e.exitCode, 2);
       expect(e.command, 'brew install --cask docker');
       expect(e.stderr, isEmpty);
@@ -73,8 +74,8 @@ void main() {
 
   group('CommandTimeoutException', () {
     test('includes timeout and command', () {
-      const e = CommandTimeoutException(
-        timeout: Duration(seconds: 30),
+      final e = CommandTimeoutException(
+        timeout: const Duration(seconds: 30),
         command: 'brew install ffmpeg',
       );
       expect(e.timeout, const Duration(seconds: 30));

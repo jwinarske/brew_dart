@@ -21,16 +21,14 @@ class JsonV2Parser {
 
     final formulae = map['formulae'] as List<dynamic>? ?? [];
     for (final f in formulae) {
-      results.add(PackageInfo(
-        formula: Formula.fromJson(f as Map<String, dynamic>),
-      ));
+      results.add(
+        PackageInfo(formula: Formula.fromJson(f as Map<String, dynamic>)),
+      );
     }
 
     final casks = map['casks'] as List<dynamic>? ?? [];
     for (final c in casks) {
-      results.add(PackageInfo(
-        cask: Cask.fromJson(c as Map<String, dynamic>),
-      ));
+      results.add(PackageInfo(cask: Cask.fromJson(c as Map<String, dynamic>)));
     }
 
     return results;
@@ -43,16 +41,16 @@ class JsonV2Parser {
 
     final formulae = map['formulae'] as List<dynamic>? ?? [];
     for (final f in formulae) {
-      results.add(InstalledPackage(
-        formula: Formula.fromJson(f as Map<String, dynamic>),
-      ));
+      results.add(
+        InstalledPackage(formula: Formula.fromJson(f as Map<String, dynamic>)),
+      );
     }
 
     final casks = map['casks'] as List<dynamic>? ?? [];
     for (final c in casks) {
-      results.add(InstalledPackage(
-        cask: Cask.fromJson(c as Map<String, dynamic>),
-      ));
+      results.add(
+        InstalledPackage(cask: Cask.fromJson(c as Map<String, dynamic>)),
+      );
     }
 
     return results;
@@ -70,43 +68,54 @@ class JsonV2Parser {
     final formulae = map['formulae'] as List<dynamic>? ?? [];
     for (final f in formulae) {
       final m = f as Map<String, dynamic>;
-      results.add(OutdatedPackage(
-        name: m['name'] as String,
-        currentVersion: m['current_version'] as String? ??
-            _firstInstalledVersion(m),
-        installedVersions: (m['installed_versions'] as List<dynamic>?)
-                ?.cast<String>() ??
-            [],
-        latestVersion: m['latest_version'] as String? ?? '',
-        pinned: m['pinned'] as bool? ?? false,
-        isCask: false,
-      ));
+      results.add(
+        OutdatedPackage(
+          name: m['name'] as String,
+          currentVersion:
+              m['current_version'] as String? ?? _firstInstalledVersion(m),
+          installedVersions: _installedVersions(m),
+          latestVersion: m['latest_version'] as String? ?? '',
+          pinned: m['pinned'] as bool? ?? false,
+          isCask: false,
+        ),
+      );
     }
 
     final casks = map['casks'] as List<dynamic>? ?? [];
     for (final c in casks) {
       final m = c as Map<String, dynamic>;
-      results.add(OutdatedPackage(
-        name: m['name'] as String,
-        currentVersion: m['current_version'] as String? ??
-            _firstInstalledVersion(m),
-        installedVersions: (m['installed_versions'] as List<dynamic>?)
-                ?.cast<String>() ??
-            [],
-        latestVersion: m['latest_version'] as String? ?? '',
-        pinned: m['pinned'] as bool? ?? false,
-        isCask: true,
-      ));
+      results.add(
+        OutdatedPackage(
+          name: m['name'] as String,
+          currentVersion:
+              m['current_version'] as String? ?? _firstInstalledVersion(m),
+          installedVersions: _installedVersions(m),
+          latestVersion: m['latest_version'] as String? ?? '',
+          pinned: m['pinned'] as bool? ?? false,
+          isCask: true,
+        ),
+      );
     }
 
     return results;
   }
 
   String _firstInstalledVersion(Map<String, dynamic> m) {
-    final versions = m['installed_versions'] as List<dynamic>?;
-    if (versions != null && versions.isNotEmpty) {
-      return versions.last as String;
+    final versions = _installedVersions(m);
+    if (versions.isNotEmpty) {
+      return versions.last;
     }
     return '';
+  }
+
+  List<String> _installedVersions(Map<String, dynamic> m) {
+    final raw = m['installed_versions'];
+    if (raw is List) {
+      return raw.whereType<String>().toList();
+    }
+    if (raw is String && raw.isNotEmpty) {
+      return <String>[raw];
+    }
+    return <String>[];
   }
 }

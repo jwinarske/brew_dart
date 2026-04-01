@@ -28,10 +28,7 @@ class BrewProcessResult {
 }
 
 /// The type of output stream a line came from.
-enum OutputType {
-  stdout,
-  stderr,
-}
+enum OutputType { stdout, stderr }
 
 /// A single line of output from a streaming brew command.
 class ProcessOutput {

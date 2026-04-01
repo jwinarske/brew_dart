@@ -29,7 +29,9 @@ class InstalledPackage {
 
   /// The installed version string.
   String get installedVersion {
-    if (formula != null && formula!.installed != null && formula!.installed!.isNotEmpty) {
+    if (formula != null &&
+        formula!.installed != null &&
+        formula!.installed!.isNotEmpty) {
       return formula!.installed!.last.version;
     }
     if (cask != null && cask!.installedVersion != null) {

@@ -29,21 +29,15 @@ class BrewCli {
     'HOMEBREW_NO_ENV_HINTS': '1',
   };
 
-  BrewCli({
-    this.brewPath,
-    Map<String, String>? defaultEnv,
-  }) : _extraDefaultEnv = defaultEnv ?? const {};
+  BrewCli({this.brewPath, Map<String, String>? defaultEnv})
+    : _extraDefaultEnv = defaultEnv ?? const {};
 
   /// The resolved executable path for brew.
   String get _executable => brewPath ?? 'brew';
 
   /// Build the merged environment for a process invocation.
   Map<String, String> _buildEnv([Map<String, String>? extraEnv]) {
-    return {
-      ..._defaultEnv,
-      ..._extraDefaultEnv,
-      ...?extraEnv,
-    };
+    return {..._defaultEnv, ..._extraDefaultEnv, ...?extraEnv};
   }
 
   /// Run a brew command and wait for completion.
@@ -57,19 +51,20 @@ class BrewCli {
   }) async {
     final command = 'brew ${args.join(' ')}';
     try {
-      final result = await Process.run(
-        _executable,
-        args,
-        environment: _buildEnv(extraEnv),
-        stdoutEncoding: utf8,
-        stderrEncoding: utf8,
-      ).timeout(
-        timeout ?? const Duration(minutes: 5),
-        onTimeout: () => throw CommandTimeoutException(
-          timeout: timeout ?? const Duration(minutes: 5),
-          command: command,
-        ),
-      );
+      final result =
+          await Process.run(
+            _executable,
+            args,
+            environment: _buildEnv(extraEnv),
+            stdoutEncoding: utf8,
+            stderrEncoding: utf8,
+          ).timeout(
+            timeout ?? const Duration(minutes: 5),
+            onTimeout: () => throw CommandTimeoutException(
+              timeout: timeout ?? const Duration(minutes: 5),
+              command: command,
+            ),
+          );
       return BrewProcessResult(
         command: command,
         exitCode: result.exitCode,
@@ -96,10 +91,7 @@ class BrewCli {
     String jsonFlag = '--json=v2',
     Duration? timeout,
   }) async {
-    final result = await run(
-      [...args, jsonFlag],
-      timeout: timeout,
-    );
+    final result = await run([...args, jsonFlag], timeout: timeout);
     if (!result.isSuccess) {
       throw BrewCommandException.fromResult(result);
     }

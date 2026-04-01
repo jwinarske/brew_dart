@@ -38,15 +38,18 @@ class ServicesParser {
       final user = userCol > 0
           ? _column(line, userCol, fileCol > 0 ? fileCol : null)
           : null;
-      final file =
-          fileCol > 0 && line.length > fileCol ? line.substring(fileCol).trim() : null;
+      final file = fileCol > 0 && line.length > fileCol
+          ? line.substring(fileCol).trim()
+          : null;
 
-      results.add(BrewService(
-        name: name,
-        status: _parseStatus(status),
-        user: user != null && user.isNotEmpty ? user : null,
-        file: file != null && file.isNotEmpty ? file : null,
-      ));
+      results.add(
+        BrewService(
+          name: name,
+          status: _parseStatus(status),
+          user: user != null && user.isNotEmpty ? user : null,
+          file: file != null && file.isNotEmpty ? file : null,
+        ),
+      );
     }
 
     return results;
@@ -71,15 +74,20 @@ class ServicesParser {
   }
 
   List<BrewService> _parseFallback(Iterable<String> lines) {
-    return lines.map((line) {
-      final parts = line.trim().split(RegExp(r'\s+'));
-      if (parts.isEmpty) return null;
-      return BrewService(
-        name: parts[0],
-        status: parts.length > 1 ? _parseStatus(parts[1]) : ServiceStatus.unknown,
-        user: parts.length > 2 && parts[2] != '-' ? parts[2] : null,
-        file: parts.length > 3 ? parts.sublist(3).join(' ') : null,
-      );
-    }).whereType<BrewService>().toList();
+    return lines
+        .map((line) {
+          final parts = line.trim().split(RegExp(r'\s+'));
+          if (parts.isEmpty) return null;
+          return BrewService(
+            name: parts[0],
+            status: parts.length > 1
+                ? _parseStatus(parts[1])
+                : ServiceStatus.unknown,
+            user: parts.length > 2 && parts[2] != '-' ? parts[2] : null,
+            file: parts.length > 3 ? parts.sublist(3).join(' ') : null,
+          );
+        })
+        .whereType<BrewService>()
+        .toList();
   }
 }

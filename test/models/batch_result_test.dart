@@ -47,11 +47,11 @@ void main() {
 
   group('BatchResult', () {
     test('computes failedPackages and succeededPackages', () {
-      final result = BatchResult<InstallResult>(
+      const result = BatchResult<InstallResult>(
         total: 3,
         succeeded: 2,
         failed: 1,
-        results: const [
+        results: [
           InstallResult(
             package: 'a',
             success: true,
@@ -75,7 +75,7 @@ void main() {
             elapsed: Duration.zero,
           ),
         ],
-        elapsed: const Duration(seconds: 10),
+        elapsed: Duration(seconds: 10),
       );
 
       expect(result.failedPackages, ['b']);
@@ -84,11 +84,11 @@ void main() {
     });
 
     test('allSucceeded is true when no failures', () {
-      final result = BatchResult<InstallResult>(
+      const result = BatchResult<InstallResult>(
         total: 2,
         succeeded: 2,
         failed: 0,
-        results: const [
+        results: [
           InstallResult(
             package: 'a',
             success: true,
@@ -104,7 +104,7 @@ void main() {
             elapsed: Duration.zero,
           ),
         ],
-        elapsed: const Duration(seconds: 5),
+        elapsed: Duration(seconds: 5),
       );
 
       expect(result.allSucceeded, isTrue);

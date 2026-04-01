@@ -32,8 +32,10 @@ void main() async {
   }
 
   for (final pkg in outdated) {
-    print('  ${pkg.name}: ${pkg.currentVersion} -> ${pkg.latestVersion}'
-        '${pkg.pinned ? ' [pinned]' : ''}');
+    print(
+      '  ${pkg.name}: ${pkg.currentVersion} -> ${pkg.latestVersion}'
+      '${pkg.pinned ? ' [pinned]' : ''}',
+    );
   }
 
   // Pin the first outdated formula if it's not already pinned
@@ -47,8 +49,10 @@ void main() async {
     await brew.pin(target.name);
 
     final pinnedAfter = await brew.pinned();
-    assert(pinnedAfter.contains(target.name),
-        'Expected ${target.name} to be pinned');
+    assert(
+      pinnedAfter.contains(target.name),
+      'Expected ${target.name} to be pinned',
+    );
     print('  Pinned.');
 
     print('\n=== Unpinning ${target.name} ===');

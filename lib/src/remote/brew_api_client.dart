@@ -78,9 +78,7 @@ class BrewApiClient {
   /// `GET /api/formula/{name}.json`
   Future<FormulaDetail> formula(String name) async {
     final body = await _get(Uri.parse('$baseUrl/formula/$name.json'));
-    return FormulaDetail.fromJson(
-      jsonDecode(body) as Map<String, dynamic>,
-    );
+    return FormulaDetail.fromJson(jsonDecode(body) as Map<String, dynamic>);
   }
 
   /// Fetch detailed info for a single cask.
@@ -88,24 +86,25 @@ class BrewApiClient {
   /// `GET /api/cask/{name}.json`
   Future<CaskDetail> cask(String name) async {
     final body = await _get(Uri.parse('$baseUrl/cask/$name.json'));
-    return CaskDetail.fromJson(
-      jsonDecode(body) as Map<String, dynamic>,
-    );
+    return CaskDetail.fromJson(jsonDecode(body) as Map<String, dynamic>);
   }
 
   /// Fetch install-on-request analytics.
   ///
   /// `GET /api/analytics/install-on-request/homebrew-core/{days}d.json`
   Future<AnalyticsData> installAnalytics({int days = 30}) async {
-    final body = await _get(Uri.parse(
-      '$baseUrl/analytics/install-on-request/homebrew-core/${days}d.json',
-    ));
+    final body = await _get(
+      Uri.parse(
+        '$baseUrl/analytics/install-on-request/homebrew-core/${days}d.json',
+      ),
+    );
     final json = jsonDecode(body) as Map<String, dynamic>;
 
     // The API returns items as a list of {formula: count} maps under
     // "items" or "formulae". Normalize to a simple Map<String, int>.
     final items = <String, int>{};
-    final rawItems = json['items'] as List<dynamic>? ??
+    final rawItems =
+        json['items'] as List<dynamic>? ??
         json['formulae'] as List<dynamic>? ??
         [];
     for (final item in rawItems) {

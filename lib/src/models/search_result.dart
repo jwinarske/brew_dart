@@ -6,10 +6,7 @@ class SearchResult {
   /// Matching cask tokens.
   final List<String> casks;
 
-  const SearchResult({
-    this.formulae = const [],
-    this.casks = const [],
-  });
+  const SearchResult({this.formulae = const [], this.casks = const []});
 
   /// Total number of matches across both types.
   int get totalCount => formulae.length + casks.length;

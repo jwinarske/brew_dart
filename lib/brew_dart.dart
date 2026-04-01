@@ -10,7 +10,7 @@
 ///   }
 /// }
 /// ```
-library brew_dart;
+library;
 
 export 'src/brew.dart';
 export 'src/cli/brew_cli.dart';

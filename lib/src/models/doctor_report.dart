@@ -4,14 +4,11 @@ part 'doctor_report.freezed.dart';
 part 'doctor_report.g.dart';
 
 /// Severity of a doctor diagnostic message.
-enum DiagnosticSeverity {
-  warning,
-  error,
-}
+enum DiagnosticSeverity { warning, error }
 
 /// A single diagnostic message from `brew doctor`.
 @freezed
-class Diagnostic with _$Diagnostic {
+abstract class Diagnostic with _$Diagnostic {
   const factory Diagnostic({
     required DiagnosticSeverity severity,
     required String title,
@@ -24,7 +21,7 @@ class Diagnostic with _$Diagnostic {
 
 /// Parsed output of `brew doctor`.
 @freezed
-class DoctorReport with _$DoctorReport {
+abstract class DoctorReport with _$DoctorReport {
   const factory DoctorReport({
     required bool healthy,
     required List<Diagnostic> diagnostics,

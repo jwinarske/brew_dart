@@ -24,10 +24,7 @@ void main() {
     test('run with invalid brewPath does not hang', () async {
       final cli = BrewCli(brewPath: '/nonexistent/path/to/brew');
       try {
-        await cli.run(
-          ['--version'],
-          timeout: const Duration(seconds: 5),
-        );
+        await cli.run(['--version'], timeout: const Duration(seconds: 5));
         fail('Expected an exception');
       } on BrewNotInstalledException {
         // Expected

@@ -11,7 +11,7 @@
 ///
 /// Does not depend on any HTTP library. Consumers provide their own
 /// HTTP GET function via the [HttpGetFn] typedef.
-library brew_dart_remote;
+library;
 
 export 'src/remote/api_models.dart';
 export 'src/remote/brew_api_client.dart';

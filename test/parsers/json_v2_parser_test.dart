@@ -69,8 +69,8 @@ void main() {
     });
 
     test('unknown fields in JSON are ignored (forward compat)', () {
-      final json = loadGoldenJson('info_v2_single_formula.json')
-          as Map<String, dynamic>;
+      final json =
+          loadGoldenJson('info_v2_single_formula.json') as Map<String, dynamic>;
       (json['formulae'] as List<dynamic>)[0]['new_future_field'] = 'surprise';
       expect(() => parser.parseInfo(json), returnsNormally);
     });
@@ -90,8 +90,11 @@ void main() {
 
       // Check that installed version info is present
       for (final f in formulae) {
-        expect(f.installedVersion, isNotEmpty,
-            reason: '${f.name} should have an installed version');
+        expect(
+          f.installedVersion,
+          isNotEmpty,
+          reason: '${f.name} should have an installed version',
+        );
       }
     });
 
@@ -99,8 +102,10 @@ void main() {
       final json = loadGoldenJson('info_v2_installed.json');
       final results = parser.parseInstalled(json);
 
-      final node =
-          results.firstWhere((p) => p.name == 'node', orElse: () => results.first);
+      final node = results.firstWhere(
+        (p) => p.name == 'node',
+        orElse: () => results.first,
+      );
       expect(node.installedVersion, isNotEmpty);
     });
   });

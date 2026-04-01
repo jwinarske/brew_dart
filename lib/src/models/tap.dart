@@ -5,7 +5,7 @@ part 'tap.g.dart';
 
 /// A Homebrew tap as returned by `brew tap-info --json`.
 @freezed
-class Tap with _$Tap {
+abstract class Tap with _$Tap {
   const factory Tap({
     required String name,
     String? user,

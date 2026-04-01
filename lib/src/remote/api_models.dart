@@ -7,7 +7,7 @@ part 'api_models.g.dart';
 ///
 /// Returned by `GET /api/formula.json`.
 @freezed
-class FormulaSummary with _$FormulaSummary {
+abstract class FormulaSummary with _$FormulaSummary {
   const factory FormulaSummary({
     required String name,
     @JsonKey(name: 'full_name') required String fullName,
@@ -28,7 +28,7 @@ class FormulaSummary with _$FormulaSummary {
 ///
 /// Returned by `GET /api/cask.json`.
 @freezed
-class CaskSummary with _$CaskSummary {
+abstract class CaskSummary with _$CaskSummary {
   const factory CaskSummary({
     required String token,
     @JsonKey(name: 'full_token') String? fullToken,
@@ -50,7 +50,7 @@ class CaskSummary with _$CaskSummary {
 /// Returned by `GET /api/formula/{name}.json`.
 /// This is the full JSON v2-style object for a single formula.
 @freezed
-class FormulaDetail with _$FormulaDetail {
+abstract class FormulaDetail with _$FormulaDetail {
   const factory FormulaDetail({
     required String name,
     @JsonKey(name: 'full_name') required String fullName,
@@ -69,6 +69,7 @@ class FormulaDetail with _$FormulaDetail {
     @JsonKey(name: 'keg_only') @Default(false) bool kegOnly,
     @Default(false) bool deprecated,
     @Default(false) bool disabled,
+
     /// Analytics data if included in the response.
     Map<String, dynamic>? analytics,
     @JsonKey(name: 'analytics_linux') Map<String, dynamic>? analyticsLinux,
@@ -83,7 +84,7 @@ class FormulaDetail with _$FormulaDetail {
 ///
 /// Returned by `GET /api/cask/{name}.json`.
 @freezed
-class CaskDetail with _$CaskDetail {
+abstract class CaskDetail with _$CaskDetail {
   const factory CaskDetail({
     required String token,
     @JsonKey(name: 'full_token') String? fullToken,
@@ -99,6 +100,7 @@ class CaskDetail with _$CaskDetail {
     @JsonKey(name: 'auto_updates') bool? autoUpdates,
     @Default(false) bool deprecated,
     @Default(false) bool disabled,
+
     /// Analytics data if included in the response.
     Map<String, dynamic>? analytics,
     @JsonKey(name: 'generated_date') String? generatedDate,
@@ -110,13 +112,14 @@ class CaskDetail with _$CaskDetail {
 
 /// Install analytics data from the formulae.brew.sh API.
 @freezed
-class AnalyticsData with _$AnalyticsData {
+abstract class AnalyticsData with _$AnalyticsData {
   const factory AnalyticsData({
     required String category,
     @JsonKey(name: 'total_items') required int totalItems,
     @JsonKey(name: 'start_date') required String startDate,
     @JsonKey(name: 'end_date') required String endDate,
     @JsonKey(name: 'total_count') required int totalCount,
+
     /// Map of formula name -> install count.
     required Map<String, int> items,
   }) = _AnalyticsData;

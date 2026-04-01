@@ -13,8 +13,8 @@ class BrewException implements Exception {
 /// Brew is not installed or not found in PATH.
 class BrewNotInstalledException extends BrewException {
   const BrewNotInstalledException([
-    String message = 'brew is not installed or not in PATH',
-  ]) : super(message);
+    super.message = 'brew is not installed or not in PATH',
+  ]);
 
   @override
   String toString() => 'BrewNotInstalledException: $message';
@@ -40,10 +40,7 @@ class BrewCommandException extends BrewException {
     );
   }
 
-  factory BrewCommandException.fromExitCode(
-    int exitCode,
-    List<String> args,
-  ) {
+  factory BrewCommandException.fromExitCode(int exitCode, List<String> args) {
     return BrewCommandException(
       exitCode: exitCode,
       command: 'brew ${args.join(' ')}',
@@ -61,7 +58,7 @@ class PackageNotFoundException extends BrewException {
   final String packageName;
 
   const PackageNotFoundException(this.packageName)
-      : super('package not found: $packageName');
+    : super('package not found: $packageName');
 
   @override
   String toString() => 'PackageNotFoundException: $packageName';
@@ -86,10 +83,8 @@ class CommandTimeoutException extends BrewException {
   final Duration timeout;
   final String command;
 
-  const CommandTimeoutException({
-    required this.timeout,
-    required this.command,
-  }) : super('command timed out after ${timeout.inSeconds}s: $command');
+  CommandTimeoutException({required this.timeout, required this.command})
+    : super('command timed out after ${timeout.inSeconds}s: $command');
 
   @override
   String toString() =>

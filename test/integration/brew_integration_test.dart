@@ -9,8 +9,11 @@ void main() {
 
   setUpAll(() async {
     brew = Brew();
-    expect(await brew.isInstalled(), isTrue,
-        reason: 'Integration tests require Homebrew');
+    expect(
+      await brew.isInstalled(),
+      isTrue,
+      reason: 'Integration tests require Homebrew',
+    );
   });
 
   // ── Read-only queries (safe, no side effects) ──
@@ -118,10 +121,7 @@ void main() {
 
     // Verify it appears in installed list
     final installed = await brew.installed();
-    expect(
-      installed.map((p) => p.name),
-      contains('hello'),
-    );
+    expect(installed.map((p) => p.name), contains('hello'));
 
     // Uninstall
     final uninstallResult = await brew.uninstall('hello');

@@ -30,7 +30,8 @@ void main() {
   });
 
   test('handles missing optional fields gracefully', () {
-    const minimal = 'HOMEBREW_VERSION: 4.0.0\n'
+    const minimal =
+        'HOMEBREW_VERSION: 4.0.0\n'
         'HOMEBREW_PREFIX: /usr/local\n'
         'HOMEBREW_CELLAR: /usr/local/Cellar\n'
         'HOMEBREW_CASKROOM: /usr/local/Caskroom\n';

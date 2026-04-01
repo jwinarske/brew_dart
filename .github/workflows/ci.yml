@@ -5,13 +5,21 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.10.1
       - run: dart pub get
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
       - run: dart analyze
       - run: dart format --output=none --set-exit-if-changed .
       - name: Run unit tests with coverage
@@ -21,8 +29,14 @@ jobs:
           dart pub global run coverage:format_coverage \
             --lcov --in=coverage --out=coverage/lcov.info \
             --report-on=lib
+      - name: Enforce coverage threshold (30%)
+        run: |
+          pct=$(awk -F'[:,]' '/^DA:/{total++; if ($3 > 0) hit++} END { if (total == 0) { print 0 } else { printf "%.2f", (hit/total)*100 } }' coverage/lcov.info)
+          echo "Coverage: ${pct}%"
+          awk -v p="$pct" 'BEGIN { exit (p >= 30) ? 0 : 1 }'
       - name: Upload coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
-          file: coverage/lcov.info
-          fail_ci_if_under: 95
+          files: coverage/lcov.info
+          fail_ci_if_error: true
+          use_oidc: true

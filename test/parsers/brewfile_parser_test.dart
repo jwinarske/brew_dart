@@ -12,7 +12,7 @@ void main() {
 
     expect(brewfile.entries, isNotEmpty);
 
-    final types = brewfile.entries.map((e) => e.type).toSet();
+    final types = brewfile.entries.map((BrewfileEntry e) => e.type).toSet();
     expect(types, contains(BrewfileEntryType.tap));
     expect(types, contains(BrewfileEntryType.brew));
     expect(types, contains(BrewfileEntryType.cask));
@@ -21,7 +21,9 @@ void main() {
 
   test('parses tap entries', () {
     final brewfile = parser.parse('tap "homebrew/cask"\ntap "homebrew/core"\n');
-    final taps = brewfile.entries.where((e) => e.type == BrewfileEntryType.tap);
+    final taps = brewfile.entries.where(
+      (BrewfileEntry e) => e.type == BrewfileEntryType.tap,
+    );
     expect(taps, hasLength(2));
     expect(taps.first.name, 'homebrew/cask');
   });
@@ -31,11 +33,11 @@ void main() {
     final brewfile = parser.parse(content);
 
     final openssl = brewfile.entries.firstWhere(
-      (e) => e.name == 'openssl@3',
+      (BrewfileEntry e) => e.name == 'openssl@3',
     );
     expect(openssl.type, BrewfileEntryType.brew);
     expect(openssl.options, isNotEmpty);
-    expect(openssl.options['args'], isA<List>());
+    expect(openssl.options['args'], isA<List<dynamic>>());
   });
 
   test('parses mas entries with id', () {
@@ -43,7 +45,7 @@ void main() {
     final brewfile = parser.parse(content);
 
     final xcode = brewfile.entries.firstWhere(
-      (e) => e.type == BrewfileEntryType.mas,
+      (BrewfileEntry e) => e.type == BrewfileEntryType.mas,
     );
     expect(xcode.name, 'Xcode');
     expect(xcode.options['id'], 497799835);

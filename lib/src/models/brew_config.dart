@@ -5,7 +5,7 @@ part 'brew_config.g.dart';
 
 /// Parsed output of `brew config`.
 @freezed
-class BrewConfig with _$BrewConfig {
+abstract class BrewConfig with _$BrewConfig {
   const factory BrewConfig({
     required String homebrewVersion,
     required String origin,
@@ -21,6 +21,7 @@ class BrewConfig with _$BrewConfig {
     String? xcode,
     String? clt,
     String? rosetta2,
+
     /// All raw key-value pairs from `brew config` output.
     required Map<String, String> raw,
   }) = _BrewConfig;
