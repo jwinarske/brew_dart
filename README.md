@@ -25,11 +25,17 @@ Wraps the `brew` CLI using `Process.run` / `Process.start`, relying on `--json=v
 - **Unified facade** -- single `Brew` class entry point for all operations
 - **Optional HTTP client** -- standalone `BrewApiClient` for formulae.brew.sh catalog browsing (separate import, no `http` dependency in core)
 
+## Flutter Example App
+
+The `example/brew_catalog/` directory contains a full macOS desktop Flutter app built on top of `brew_dart` that demonstrates real-world usage: browsing the formula/cask catalog, viewing package details, managing taps, and reading Brewfiles.
+
+![brew_catalog Flutter example app](doc/flutter_example_01.png)
+
 ## Installation
 
 ```yaml
 dependencies:
-  brew_dart: ^0.1.0
+  brew_dart: ^0.2.0
 ```
 
 Then run code generation for the `freezed` models:
