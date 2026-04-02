@@ -26,29 +26,37 @@ class PackageDetail extends ConsumerWidget {
 
     return detailAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.error_outline_rounded,
-                size: 48, color: Theme.of(context).colorScheme.error),
-            const SizedBox(height: 16),
-            Text('Failed to load package info',
-                style: Theme.of(context).textTheme.bodyLarge),
-            const SizedBox(height: 8),
-            Text('$error', style: Theme.of(context).textTheme.bodySmall),
-          ],
-        ),
-      ),
+      error:
+          (error, _) => Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.error_outline_rounded,
+                  size: 48,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Failed to load package info',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                const SizedBox(height: 8),
+                Text('$error', style: Theme.of(context).textTheme.bodySmall),
+              ],
+            ),
+          ),
       data: (info) {
         final isInstalled = installedNames.valueOrNull?.contains(name) ?? false;
         final hasUpdate = outdatedNames.valueOrNull?.contains(name) ?? false;
-        final isOperating =
-            operations.any((op) => op.package == name && op.status.name == 'running');
+        final isOperating = operations.any(
+          (op) => op.package == name && op.status.name == 'running',
+        );
 
-        final version = info.isFormula
-            ? info.formula!.versions.stable
-            : info.cask?.version ?? '';
+        final version =
+            info.isFormula
+                ? info.formula!.versions.stable
+                : info.cask?.version ?? '';
         final license = info.formula?.license ?? 'N/A';
         final tap = info.formula?.tap ?? info.cask?.tap ?? 'N/A';
         final homepage = info.homepage;
@@ -85,8 +93,8 @@ class PackageDetail extends ConsumerWidget {
               Text(
                 info.desc,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -144,15 +152,18 @@ class PackageDetail extends ConsumerWidget {
                 isInstalled: isInstalled,
                 hasUpdate: hasUpdate,
                 isOperating: isOperating,
-                onInstall: () => ref
-                    .read(operationsProvider.notifier)
-                    .install(name, cask: info.isCask),
-                onUninstall: () => ref
-                    .read(operationsProvider.notifier)
-                    .uninstall(name, cask: info.isCask),
-                onUpgrade: () => ref
-                    .read(operationsProvider.notifier)
-                    .upgrade(name, cask: info.isCask),
+                onInstall:
+                    () => ref
+                        .read(operationsProvider.notifier)
+                        .install(name, cask: info.isCask),
+                onUninstall:
+                    () => ref
+                        .read(operationsProvider.notifier)
+                        .uninstall(name, cask: info.isCask),
+                onUpgrade:
+                    () => ref
+                        .read(operationsProvider.notifier)
+                        .upgrade(name, cask: info.isCask),
               ),
             ],
           ),

@@ -71,10 +71,9 @@ class JsonV2Parser {
       results.add(
         OutdatedPackage(
           name: m['name'] as String,
-          currentVersion:
-              m['current_version'] as String? ?? _firstInstalledVersion(m),
+          currentVersion: _firstInstalledVersion(m),
           installedVersions: _installedVersions(m),
-          latestVersion: m['latest_version'] as String? ?? '',
+          latestVersion: m['current_version'] as String? ?? '',
           pinned: m['pinned'] as bool? ?? false,
           isCask: false,
         ),
@@ -87,10 +86,9 @@ class JsonV2Parser {
       results.add(
         OutdatedPackage(
           name: m['name'] as String,
-          currentVersion:
-              m['current_version'] as String? ?? _firstInstalledVersion(m),
+          currentVersion: _firstInstalledVersion(m),
           installedVersions: _installedVersions(m),
-          latestVersion: m['latest_version'] as String? ?? '',
+          latestVersion: m['current_version'] as String? ?? '',
           pinned: m['pinned'] as bool? ?? false,
           isCask: true,
         ),

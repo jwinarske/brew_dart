@@ -30,7 +30,7 @@ class CatalogScreen extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(width: 16),
-              const Expanded(child: app.PackageSearchBar()),
+              const Expanded(child: app.AppSearchBar()),
             ],
           ),
         ),
@@ -40,10 +40,10 @@ class CatalogScreen extends ConsumerWidget {
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (err, _) => Center(child: Text('Error: $err')),
             data: (results) {
-              final names = casksOnly ? results.casks : [
-                ...results.formulae,
-                ...results.casks,
-              ];
+              final names =
+                  casksOnly
+                      ? results.casks
+                      : [...results.formulae, ...results.casks];
               if (names.isEmpty) {
                 return const Center(
                   child: Text('Type to search for packages...'),
@@ -51,22 +51,23 @@ class CatalogScreen extends ConsumerWidget {
               }
               final installed = installedNames.valueOrNull ?? {};
               final outdated = outdatedNames.valueOrNull ?? {};
-              final items = names.map((name) {
-                return PackageListItem(
-                  name: name,
-                  version: '',
-                  description: '',
-                  isInstalled: installed.contains(name),
-                  hasUpdate: outdated.contains(name),
-                );
-              }).toList();
+              final items =
+                  names.map((name) {
+                    return PackageListItem(
+                      name: name,
+                      version: '',
+                      description: '',
+                      isInstalled: installed.contains(name),
+                      hasUpdate: outdated.contains(name),
+                    );
+                  }).toList();
 
               return PackageList(
                 packages: items,
                 selectedName: selectedPkg,
-                onSelect: (name) => ref
-                    .read(selectedPackageProvider.notifier)
-                    .state = name,
+                onSelect:
+                    (name) =>
+                        ref.read(selectedPackageProvider.notifier).state = name,
               );
             },
           ),

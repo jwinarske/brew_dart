@@ -6,6 +6,7 @@ import 'screens/brewfile_screen.dart';
 import 'screens/catalog_screen.dart';
 import 'screens/installed_screen.dart';
 import 'screens/outdated_screen.dart';
+import 'screens/pinned_screen.dart';
 import 'screens/services_screen.dart';
 import 'screens/shell.dart';
 import 'screens/taps_screen.dart';
@@ -19,31 +20,49 @@ final _router = GoRouter(
       routes: [
         GoRoute(
           path: '/catalog',
-          builder: (context, state) => const CatalogScreen(),
+          pageBuilder:
+              (context, state) =>
+                  const NoTransitionPage(child: CatalogScreen()),
         ),
         GoRoute(
           path: '/catalog/casks',
-          builder: (context, state) => const CatalogScreen(casksOnly: true),
+          pageBuilder:
+              (context, state) =>
+                  const NoTransitionPage(child: CatalogScreen(casksOnly: true)),
         ),
         GoRoute(
           path: '/installed',
-          builder: (context, state) => const InstalledScreen(),
+          pageBuilder:
+              (context, state) =>
+                  const NoTransitionPage(child: InstalledScreen()),
         ),
         GoRoute(
           path: '/outdated',
-          builder: (context, state) => const OutdatedScreen(),
+          pageBuilder:
+              (context, state) =>
+                  const NoTransitionPage(child: OutdatedScreen()),
+        ),
+        GoRoute(
+          path: '/pinned',
+          pageBuilder:
+              (context, state) => const NoTransitionPage(child: PinnedScreen()),
         ),
         GoRoute(
           path: '/taps',
-          builder: (context, state) => const TapsScreen(),
+          pageBuilder:
+              (context, state) => const NoTransitionPage(child: TapsScreen()),
         ),
         GoRoute(
           path: '/services',
-          builder: (context, state) => const ServicesScreen(),
+          pageBuilder:
+              (context, state) =>
+                  const NoTransitionPage(child: ServicesScreen()),
         ),
         GoRoute(
           path: '/brewfile',
-          builder: (context, state) => const BrewfileScreen(),
+          pageBuilder:
+              (context, state) =>
+                  const NoTransitionPage(child: BrewfileScreen()),
         ),
       ],
     ),

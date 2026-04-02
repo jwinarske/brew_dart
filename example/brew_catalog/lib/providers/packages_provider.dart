@@ -6,16 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'brew_provider.dart';
 
 /// All installed packages — backed by `brew info --json=v2 --installed`.
-final installedPackagesProvider =
-    FutureProvider<List<InstalledPackage>>((ref) async {
+final installedPackagesProvider = FutureProvider<List<InstalledPackage>>((
+  ref,
+) async {
   final state = await ref.watch(brewConnectionProvider.future);
   final brew = getBrewOrThrow(state);
   return brew.installed();
 });
 
 /// Outdated packages — backed by `brew outdated --json=v2`.
-final outdatedPackagesProvider =
-    FutureProvider<List<OutdatedPackage>>((ref) async {
+final outdatedPackagesProvider = FutureProvider<List<OutdatedPackage>>((
+  ref,
+) async {
   final state = await ref.watch(brewConnectionProvider.future);
   final brew = getBrewOrThrow(state);
   return brew.outdated();
@@ -50,4 +52,11 @@ final installedNamesProvider = FutureProvider<Set<String>>((ref) async {
 final outdatedNamesProvider = FutureProvider<Set<String>>((ref) async {
   final packages = await ref.watch(outdatedPackagesProvider.future);
   return packages.map((p) => p.name).toSet();
+});
+
+/// Pinned packages — backed by `brew list --pinned`.
+final pinnedPackagesProvider = FutureProvider<List<String>>((ref) async {
+  final state = await ref.watch(brewConnectionProvider.future);
+  final brew = getBrewOrThrow(state);
+  return brew.pinned();
 });

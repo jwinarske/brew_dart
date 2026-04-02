@@ -90,7 +90,9 @@ class DependencyConflictException extends BrewException {
   DependencyConflictException({
     required this.packageName,
     required this.dependents,
-  }) : super('cannot remove $packageName: required by ${dependents.join(', ')}');
+  }) : super(
+         'cannot remove $packageName: required by ${dependents.join(', ')}',
+       );
 
   @override
   String toString() =>

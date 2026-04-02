@@ -33,23 +33,23 @@ class Sidebar extends ConsumerWidget {
               child: ListView(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 children: [
-                  _SectionHeader(title: 'Browse'),
+                  const _SectionHeader(title: 'Browse'),
                   _NavItem(
                     icon: Icons.apps_rounded,
                     label: 'All',
-                    route: '/all',
+                    route: '/catalog',
                     currentRoute: currentRoute,
                     onNavigate: onNavigate,
                   ),
                   _NavItem(
                     icon: Icons.desktop_mac_rounded,
                     label: 'Casks',
-                    route: '/casks',
+                    route: '/catalog/casks',
                     currentRoute: currentRoute,
                     onNavigate: onNavigate,
                   ),
                   const SizedBox(height: 8),
-                  _SectionHeader(title: 'Local'),
+                  const _SectionHeader(title: 'Local'),
                   _NavItem(
                     icon: Icons.inventory_2_rounded,
                     label: 'Installed',
@@ -74,7 +74,7 @@ class Sidebar extends ConsumerWidget {
                     onNavigate: onNavigate,
                   ),
                   const SizedBox(height: 8),
-                  _SectionHeader(title: 'Manage'),
+                  const _SectionHeader(title: 'Manage'),
                   _NavItem(
                     icon: Icons.source_rounded,
                     label: 'Taps',
@@ -101,24 +101,28 @@ class Sidebar extends ConsumerWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: brewVersion?.when(
-                    data: (version) => Text(
-                      'brew $version',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    loading: () => const SizedBox(
-                      width: 12,
-                      height: 12,
-                      child: CircularProgressIndicator(strokeWidth: 1.5),
-                    ),
-                    error: (_, __) => Text(
-                      'brew unavailable',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: colorScheme.error,
-                      ),
-                    ),
+              child:
+                  brewVersion?.when(
+                    data:
+                        (version) => Text(
+                          'brew $version',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                    loading:
+                        () => const SizedBox(
+                          width: 12,
+                          height: 12,
+                          child: CircularProgressIndicator(strokeWidth: 1.5),
+                        ),
+                    error:
+                        (_, __) => Text(
+                          'brew unavailable',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: colorScheme.error,
+                          ),
+                        ),
                   ) ??
                   const SizedBox.shrink(),
             ),
@@ -142,16 +146,17 @@ class Sidebar extends ConsumerWidget {
           child: Text(
             '$value',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                ),
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+            ),
           ),
         );
       },
-      loading: () => const SizedBox(
-        width: 12,
-        height: 12,
-        child: CircularProgressIndicator(strokeWidth: 1.5),
-      ),
+      loading:
+          () => const SizedBox(
+            width: 12,
+            height: 12,
+            child: CircularProgressIndicator(strokeWidth: 1.5),
+          ),
       error: (_, __) => null,
     );
   }
@@ -169,10 +174,10 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
-            ),
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
@@ -206,18 +211,14 @@ class _NavItem extends StatelessWidget {
       leading: Icon(
         icon,
         size: 20,
-        color: isSelected
-            ? colorScheme.primary
-            : colorScheme.onSurfaceVariant,
+        color: isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant,
       ),
       title: Text(
         label,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: isSelected
-                  ? colorScheme.primary
-                  : colorScheme.onSurface,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-            ),
+          color: isSelected ? colorScheme.primary : colorScheme.onSurface,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+        ),
       ),
       trailing: trailing,
       selected: isSelected,

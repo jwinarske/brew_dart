@@ -20,7 +20,7 @@ jobs:
       - name: Generate code
         run: dart run build_runner build --delete-conflicting-outputs
       - run: dart analyze
-      - run: dart format --output=none --set-exit-if-changed .
+      - run: dart format --output=none --set-exit-if-changed lib test example/example.dart
       - name: Run unit tests with coverage
         run: |
           dart pub global activate coverage

@@ -17,3 +17,5 @@ coverage/
 # pub
 pubspec.lock
 
+# program artifacts
+Brewfile

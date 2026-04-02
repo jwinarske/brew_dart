@@ -17,9 +17,7 @@ class _AppSearchBarState extends ConsumerState<AppSearchBar> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(
-      text: ref.read(searchQueryProvider),
-    );
+    _controller = TextEditingController(text: ref.read(searchQueryProvider));
   }
 
   @override
@@ -37,15 +35,16 @@ class _AppSearchBarState extends ConsumerState<AppSearchBar> {
       decoration: InputDecoration(
         hintText: 'Search packages...',
         prefixIcon: const Icon(Icons.search_rounded),
-        suffixIcon: query.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear_rounded),
-                onPressed: () {
-                  _controller.clear();
-                  ref.read(searchQueryProvider.notifier).state = '';
-                },
-              )
-            : null,
+        suffixIcon:
+            query.isNotEmpty
+                ? IconButton(
+                  icon: const Icon(Icons.clear_rounded),
+                  onPressed: () {
+                    _controller.clear();
+                    ref.read(searchQueryProvider.notifier).state = '';
+                  },
+                )
+                : null,
         filled: true,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

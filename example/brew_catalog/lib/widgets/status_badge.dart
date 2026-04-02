@@ -7,30 +7,23 @@ class StatusBadge extends StatelessWidget {
   final String label;
   final Color color;
 
-  const StatusBadge._({
-    required this.label,
-    required this.color,
-  });
-
   /// Green badge for installed packages.
   const StatusBadge.installed({super.key})
-      : label = 'Installed',
-        color = AppColors.installed;
+    : label = 'Installed',
+      color = AppColors.installed;
 
   /// Amber badge for packages with available updates.
   const StatusBadge.update({super.key})
-      : label = 'Update',
-        color = AppColors.outdated;
+    : label = 'Update',
+      color = AppColors.outdated;
 
   /// Purple badge for pinned packages.
   const StatusBadge.pinned({super.key})
-      : label = 'Pinned',
-        color = AppColors.pinned;
+    : label = 'Pinned',
+      color = AppColors.pinned;
 
   /// Blue badge for cask packages.
-  const StatusBadge.cask({super.key})
-      : label = 'Cask',
-        color = AppColors.cask;
+  const StatusBadge.cask({super.key}) : label = 'Cask', color = AppColors.cask;
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +36,9 @@ class StatusBadge extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
+          color: color,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

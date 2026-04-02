@@ -6,6 +6,7 @@ import '../providers/brew_provider.dart';
 import '../providers/operation_provider.dart';
 import '../providers/package_detail_provider.dart';
 import '../providers/packages_provider.dart';
+import '../models/view_models.dart';
 import '../widgets/package_detail.dart';
 import '../widgets/progress_sheet.dart';
 import '../widgets/sidebar.dart';
@@ -20,8 +21,7 @@ class AppShell extends ConsumerWidget {
     final connection = ref.watch(brewConnectionProvider);
     final activeOps = ref.watch(activeOperationsProvider);
     final selectedPkg = ref.watch(selectedPackageProvider);
-    final currentRoute =
-        GoRouterState.of(context).uri.toString();
+    final currentRoute = GoRouterState.of(context).uri.toString();
 
     return Scaffold(
       body: Row(
@@ -40,23 +40,22 @@ class AppShell extends ConsumerWidget {
                   .watch(outdatedPackagesProvider)
                   .whenData((list) => list.length),
               currentRoute: currentRoute,
-              onNavigate: (route) => context.go(route),
+              onNavigate: (route) {
+                ref.read(selectedPackageProvider.notifier).state = null;
+                context.go(route);
+              },
             ),
           ),
           const VerticalDivider(width: 1),
           Expanded(child: child),
           if (selectedPkg != null) ...[
             const VerticalDivider(width: 1),
-            SizedBox(
-              width: 320,
-              child: PackageDetailPanel(name: selectedPkg),
-            ),
+            SizedBox(width: 320, child: PackageDetail(name: selectedPkg)),
           ],
         ],
       ),
-      bottomSheet: activeOps.isNotEmpty
-          ? ProgressSheet(operations: activeOps)
-          : null,
+      bottomSheet:
+          activeOps.isNotEmpty ? ProgressSheet(operations: activeOps) : null,
     );
   }
 }

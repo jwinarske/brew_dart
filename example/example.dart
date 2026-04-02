@@ -55,9 +55,11 @@ void main() async {
     print('${pkg.name}: ${pkg.currentVersion} -> ${pkg.latestVersion}');
   }
   if (outdated.isNotEmpty) {
-    await brew.upgradeAll(onEach: (pkg, res) {
-      print('Upgraded $pkg: ${res.success ? 'ok' : 'failed'}');
-    });
+    await brew.upgradeAll(
+      onEach: (pkg, res) {
+        print('Upgraded $pkg: ${res.success ? 'ok' : 'failed'}');
+      },
+    );
   }
 
   // Cleanup old versions (dry run)

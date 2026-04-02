@@ -24,8 +24,8 @@ class PackageList extends StatelessWidget {
         child: Text(
           'No packages found',
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
       );
     }

@@ -6,10 +6,7 @@ import 'package:brew_catalog/models/view_models.dart';
 class ProgressSheet extends StatelessWidget {
   final List<BrewOperation> operations;
 
-  const ProgressSheet({
-    super.key,
-    required this.operations,
-  });
+  const ProgressSheet({super.key, required this.operations});
 
   @override
   Widget build(BuildContext context) {
@@ -90,21 +87,21 @@ class ProgressSheet extends StatelessWidget {
                     width: 32,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurfaceVariant
-                          .withValues(alpha: 0.4),
+                      color: theme.colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.4,
+                      ),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Row(
                     children: [
-                      Text(
-                        'Operations',
-                        style: theme.textTheme.titleMedium,
-                      ),
+                      Text('Operations', style: theme.textTheme.titleMedium),
                       const Spacer(),
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(),
@@ -144,17 +141,26 @@ class _OperationTile extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     final statusIcon = switch (operation.status) {
-      OperationStatus.pending => Icon(Icons.schedule_rounded,
-          size: 20, color: colorScheme.onSurfaceVariant),
+      OperationStatus.pending => Icon(
+        Icons.schedule_rounded,
+        size: 20,
+        color: colorScheme.onSurfaceVariant,
+      ),
       OperationStatus.running => const SizedBox(
-          width: 20,
-          height: 20,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
-      OperationStatus.completed =>
-        Icon(Icons.check_circle_rounded, size: 20, color: colorScheme.primary),
-      OperationStatus.failed =>
-        Icon(Icons.error_rounded, size: 20, color: colorScheme.error),
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      ),
+      OperationStatus.completed => Icon(
+        Icons.check_circle_rounded,
+        size: 20,
+        color: colorScheme.primary,
+      ),
+      OperationStatus.failed => Icon(
+        Icons.error_rounded,
+        size: 20,
+        color: colorScheme.error,
+      ),
     };
 
     return ExpansionTile(

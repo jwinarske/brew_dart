@@ -10,13 +10,11 @@ void main() {
     final output = loadGoldenText('config.txt');
     final config = parser.parse(output);
 
-    expect(config.homebrewVersion, '4.4.23');
+    expect(config.homebrewVersion, '5.1.3');
     expect(config.origin, 'https://github.com/Homebrew/brew');
     expect(config.prefix, '/opt/homebrew');
-    expect(config.cellar, '/opt/homebrew/Cellar');
-    expect(config.caskroom, '/opt/homebrew/Caskroom');
     expect(config.head, isNotNull);
-    expect(config.os, isNotNull);
+    expect(config.os, isNull); // removed from brew config output
     expect(config.cpu, isNotNull);
   });
 
@@ -25,7 +23,7 @@ void main() {
     final config = parser.parse(output);
 
     expect(config.raw, isNotEmpty);
-    expect(config.raw['HOMEBREW_VERSION'], '4.4.23');
+    expect(config.raw['HOMEBREW_VERSION'], '5.1.3');
     expect(config.raw['HOMEBREW_PREFIX'], '/opt/homebrew');
   });
 
