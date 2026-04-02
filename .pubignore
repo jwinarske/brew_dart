@@ -1,0 +1,27 @@
+# Exclude from pub.dev package
+
+# Plan documents
+*.md
+!README.md
+!CHANGELOG.md
+!LICENSE
+
+# Flutter app (separate package)
+brew_catalog/
+
+# CI and scripts
+.github/
+scripts/
+
+# Test fixtures (large golden files)
+test/parsers/golden/
+test/manual/
+test/integration/
+
+# IDE
+.idea/
+.vscode/
+
+# Generated files (consumers run build_runner themselves)
+*.g.dart
+*.freezed.dart

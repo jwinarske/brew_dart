@@ -1,28 +1,38 @@
+[![pub package](https://img.shields.io/pub/v/brew_dart.svg)](https://pub.dev/packages/brew_dart)
+[![CI](https://github.com/jwinarske/brew_dart/actions/workflows/ci.yml/badge.svg)](https://github.com/jwinarske/brew_dart/actions/workflows/ci.yml)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 # brew_dart
 
-A Dart package providing full programmatic access to [Homebrew](https://brew.sh) on macOS and Linux.
+Full programmatic access to [Homebrew](https://brew.sh) from Dart on macOS and Linux.
 
 Wraps the `brew` CLI using `Process.run` / `Process.start`, relying on `--json=v2` structured output wherever brew supports it, and falling back to sanitised text parsing only where JSON is unavailable.
 
+## Platform Support
+
+| Platform | Status |
+|----------|--------|
+| macOS    | Fully supported |
+| Linux    | Supported (Linuxbrew) |
+| Windows  | Not supported |
+
 ## Features
 
-- **CLI-first** — uses `brew info --json=v2` as the stable interface, not the HTTP API
-- **Strongly-typed models** — all JSON and text output parsed into immutable Dart classes via `freezed`
-- **Stream-based output** — long-running commands (install, upgrade, update) expose `Stream<ProcessOutput>` for real-time progress
-- **Batch operations** — multi-package install/remove/upgrade with parallel or sequential execution
-- **Unified facade** — single `Brew` class entry point for all operations
-- **Optional HTTP client** — standalone `BrewApiClient` for formulae.brew.sh catalog browsing (separate import, no `http` dependency in core)
+- **CLI-first** -- uses `brew info --json=v2` as the stable interface, not the HTTP API
+- **Strongly-typed models** -- all JSON and text output parsed into immutable Dart classes via `freezed`
+- **Stream-based output** -- long-running commands (install, upgrade, update) expose `Stream<ProcessOutput>` for real-time progress
+- **Batch operations** -- multi-package install/remove/upgrade with parallel or sequential execution and per-package callbacks
+- **Unified facade** -- single `Brew` class entry point for all operations
+- **Optional HTTP client** -- standalone `BrewApiClient` for formulae.brew.sh catalog browsing (separate import, no `http` dependency in core)
 
 ## Installation
-
-Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
   brew_dart: ^0.1.0
 ```
 
-Then run code generation (required for `freezed` models):
+Then run code generation for the `freezed` models:
 
 ```bash
 dart pub get
@@ -117,7 +127,7 @@ print('icu4c is used by: ${uses.join(', ')}');
 // List installed (fast, names only)
 final names = await brew.listNames();
 
-// List installed (rich, full details)
+// List installed (rich, full details via JSON)
 final packages = await brew.listInstalled();
 ```
 
@@ -152,16 +162,16 @@ await brew.restartService('redis');
 // Update Homebrew itself
 final update = await brew.update();
 
-// Link / unlink
+// Link / unlink keg-only formulae
 await brew.link('openssl@3', force: true);
 await brew.unlink('openssl@3');
 
-// Pin / unpin
+// Pin / unpin to prevent upgrades
 await brew.pin('node');
 await brew.unpin('node');
 final pinned = await brew.pinned();
 
-// Doctor
+// Diagnostics
 final report = await brew.doctor();
 if (!report.healthy) {
   for (final d in report.diagnostics) {
@@ -169,15 +179,16 @@ if (!report.healthy) {
   }
 }
 
-// Config
+// Configuration
 final config = await brew.config();
 print('Prefix: ${config.prefix}');
+print('Cellar: ${config.cellar}');
 ```
 
 ### Brewfile Support
 
 ```dart
-// Dump current state to a Brewfile
+// Export current state to a Brewfile
 await brew.bundleDump(file: 'Brewfile', force: true);
 
 // Parse a Brewfile
@@ -186,87 +197,121 @@ for (final entry in brewfile.entries) {
   print('${entry.type.name}: ${entry.name}');
 }
 
-// Install from Brewfile
+// Install everything from a Brewfile
 final bundleResult = await brew.bundle(file: 'Brewfile');
 print('Success: ${bundleResult.success}');
 
-// Check Brewfile satisfaction
+// Check Brewfile against installed packages
 final check = await brew.bundleCheck(file: 'Brewfile');
 print('Satisfied: ${check.satisfied}');
+if (!check.satisfied) {
+  print('Missing: ${check.missingEntries.join(', ')}');
+}
 ```
 
 ### Optional HTTP API Client
 
-For catalog browsing when brew may not be installed. Import separately:
+For catalog browsing when brew may not be installed. Import separately -- this does not add an `http` dependency to the core package:
 
 ```dart
 import 'package:brew_dart/remote.dart';
 
-void main() async {
-  final client = BrewApiClient(
-    httpGet: (url) async {
-      // Provide your own HTTP GET implementation
-      final response = await http.get(url);
-      return response.body;
-    },
-  );
+final client = BrewApiClient(
+  httpGet: (url) async {
+    // Bring your own HTTP client
+    final response = await http.get(url);
+    return response.body;
+  },
+);
 
-  final formulae = await client.allFormulae();
-  print('${formulae.length} formulae available');
-
-  final detail = await client.formula('git');
-  print('${detail.name}: ${detail.desc}');
-}
+final formulae = await client.allFormulae();
+final detail = await client.formula('git');
+final analytics = await client.installAnalytics(days: 30);
 ```
 
-> **Note:** The HTTP API is static, unversioned, read-only, and knows nothing about local state. Use it for browsing/discovery only, not as a source of truth.
+> **Note:** The formulae.brew.sh API serves static files with no versioning. It is read-only, knows nothing about local state, and may lag behind what `brew` sees locally. Use for browsing/discovery only, not as a source of truth.
 
 ## Architecture
 
 ```
-brew_dart/
-├── lib/
-│   ├── brew_dart.dart              # barrel export
-│   ├── remote.dart                 # optional HTTP API barrel
-│   └── src/
-│       ├── brew.dart               # unified Brew facade
-│       ├── exceptions.dart         # exception hierarchy
-│       ├── cli/
-│       │   ├── brew_cli.dart       # Process.run / Process.start wrapper
-│       │   └── brew_process_result.dart
-│       ├── models/                 # freezed data classes
-│       ├── parsers/                # JSON v2 + text parsers
-│       └── remote/                 # optional HTTP API client
-├── test/
-│   ├── cli/                        # CLI runner unit tests
-│   ├── parsers/                    # parser unit tests + golden files
-│   ├── models/                     # model unit tests
-│   ├── facade/                     # Brew facade tests (mocked CLI)
-│   ├── remote/                     # API client tests
-│   ├── integration/                # real brew tests (macOS CI)
-│   └── manual/                     # local-only edge case scripts
-└── example/
+lib/
+├── brew_dart.dart                # main barrel export
+├── remote.dart                   # optional HTTP API barrel
+└── src/
+    ├── brew.dart                 # unified Brew facade
+    ├── exceptions.dart           # exception hierarchy
+    ├── cli/
+    │   ├── brew_cli.dart         # Process.run / Process.start wrapper
+    │   └── brew_process_result.dart
+    ├── models/                   # freezed data classes
+    │   ├── formula.dart          # Formula, FormulaVersions, InstalledVersion
+    │   ├── cask.dart             # Cask
+    │   ├── tap.dart              # Tap
+    │   ├── service.dart          # BrewService, ServiceStatus
+    │   ├── brew_config.dart      # BrewConfig
+    │   ├── doctor_report.dart    # DoctorReport, Diagnostic
+    │   ├── outdated_package.dart # OutdatedPackage
+    │   ├── batch_result.dart     # InstallResult, BatchResult, etc.
+    │   ├── brewfile.dart         # Brewfile, BrewfileEntry
+    │   └── ...
+    ├── parsers/                  # JSON v2 + text output parsers
+    └── remote/                   # optional HTTP API client
+```
+
+### Design Principles
+
+1. **`--json=v2` wherever available** -- Homebrew's recommended stable interface for third-party tools.
+2. **Clean environment defaults** -- every brew invocation sets `HOMEBREW_NO_COLOR`, `HOMEBREW_NO_EMOJI`, `HOMEBREW_NO_AUTO_UPDATE`, `HOMEBREW_NO_ANALYTICS`, `HOMEBREW_NO_ENV_HINTS`.
+3. **Text parsing only as a fallback** -- tested against golden files of real brew output.
+4. **No HTTP dependency in core** -- the optional `BrewApiClient` accepts an `HttpGetFn` typedef so consumers provide their own client.
+
+## Exception Handling
+
+```dart
+try {
+  await brew.install('nonexistent');
+} on PackageNotFoundException catch (e) {
+  print('Not found: ${e.packageName}');
+} on DependencyConflictException catch (e) {
+  print('${e.packageName} is required by: ${e.dependents}');
+} on BrewCommandException catch (e) {
+  print('Command failed: ${e.command} (exit ${e.exitCode})');
+} on BrewNotInstalledException {
+  print('Homebrew is not installed');
+} on CommandTimeoutException catch (e) {
+  print('Timed out after ${e.timeout.inSeconds}s');
+}
 ```
 
 ## Testing
 
 Three tiers of tests:
 
-- **Tier 1 — Unit tests** (`dart test`): mocked `Process.run`, golden-file-backed parsers, runs on Linux CI every push. Target: 100% line coverage.
-- **Tier 2 — Integration tests** (`dart test --tags integration`): real brew on macOS CI, weekly schedule. ~15 smoke tests.
-- **Tier 3 — Manual scripts** (`dart test/manual/*.dart`): local-only edge cases for services, taps, Brewfiles, etc.
+| Tier | Runs on | Frequency | Brew required |
+|------|---------|-----------|---------------|
+| **Unit tests** | Linux CI | every push | No (mocked) |
+| **Integration tests** | macOS CI | weekly + releases | Yes |
+| **Manual scripts** | local machine | before releases | Yes |
 
 ```bash
 # Run unit tests
 dart test --exclude-tags integration
 
-# Run integration tests (requires brew)
+# Run integration tests (requires Homebrew)
 dart test --tags integration
 
-# Capture fresh golden files (requires brew)
+# Capture fresh golden files from real brew output
 ./scripts/capture_golden_files.sh
 ```
 
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Run `dart run build_runner build --delete-conflicting-outputs` after model changes
+4. Ensure `dart analyze` and `dart test --exclude-tags integration` pass
+5. Submit a pull request
+
 ## License
 
-See [LICENSE](LICENSE) for details.
+Apache 2.0 -- see [LICENSE](LICENSE) for details.

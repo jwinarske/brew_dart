@@ -1,10 +1,23 @@
 name: brew_dart
 description: >-
-  A Dart package providing full programmatic access to Homebrew on macOS/Linux.
-  Wraps the brew CLI with strongly-typed models, JSON v2 parsing, and
-  stream-based output for long-running commands.
+  Full programmatic access to Homebrew on macOS and Linux. Wraps the brew CLI
+  with strongly-typed freezed models, JSON v2 parsing, streaming output, batch
+  operations, and a unified Brew facade.
 version: 0.1.0
-repository: https://github.com/anthropics/brew_dart
+homepage: https://github.com/jwinarske/brew_dart
+repository: https://github.com/jwinarske/brew_dart
+issue_tracker: https://github.com/jwinarske/brew_dart/issues
+
+topics:
+  - homebrew
+  - cli
+  - package-manager
+  - macos
+  - linux
+
+platforms:
+  macos:
+  linux:
 
 environment:
   sdk: ^3.10.1
