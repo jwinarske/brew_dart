@@ -141,5 +141,77 @@ void main() {
       expect(pinned, isNotEmpty);
       expect(unpinned, isNotEmpty);
     });
+
+    test('parses outdated casks', () {
+      final json = {
+        'formulae': <dynamic>[],
+        'casks': <dynamic>[
+          {
+            'name': 'docker',
+            'installed_versions': ['4.37.0'],
+            'current_version': '4.37.0',
+            'latest_version': '4.38.0',
+            'pinned': false,
+          },
+        ],
+      };
+      final results = parser.parseOutdated(json);
+      expect(results, hasLength(1));
+      expect(results[0].isCask, isTrue);
+      expect(results[0].name, 'docker');
+      expect(results[0].currentVersion, '4.37.0');
+    });
+
+    test('falls back to installedVersions when current_version is null', () {
+      final json = {
+        'formulae': <dynamic>[
+          {
+            'name': 'git',
+            'installed_versions': ['2.48.0'],
+            'current_version': null,
+            'latest_version': '2.49.0',
+            'pinned': false,
+          },
+        ],
+        'casks': <dynamic>[],
+      };
+      final results = parser.parseOutdated(json);
+      expect(results[0].currentVersion, '2.48.0');
+    });
+
+    test('installed_versions as a string (legacy format)', () {
+      final json = {
+        'formulae': <dynamic>[
+          {
+            'name': 'wget',
+            'installed_versions': '1.21.3',
+            'current_version': null,
+            'latest_version': '1.21.4',
+            'pinned': false,
+          },
+        ],
+        'casks': <dynamic>[],
+      };
+      final results = parser.parseOutdated(json);
+      expect(results[0].installedVersions, contains('1.21.3'));
+      expect(results[0].currentVersion, '1.21.3');
+    });
+
+    test('installed_versions empty/missing returns empty list', () {
+      final json = {
+        'formulae': <dynamic>[
+          {
+            'name': 'curl',
+            'installed_versions': null,
+            'current_version': '8.0.0',
+            'latest_version': '8.1.0',
+            'pinned': false,
+          },
+        ],
+        'casks': <dynamic>[],
+      };
+      final results = parser.parseOutdated(json);
+      expect(results[0].installedVersions, isEmpty);
+    });
   });
 }

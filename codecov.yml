@@ -1,0 +1,8 @@
+coverage:
+  # Exclude auto-generated files from coverage reporting.
+  # These files are produced by build_runner (freezed, json_serializable)
+  # and contain boilerplate that is impractical to test directly.
+  ignore:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+

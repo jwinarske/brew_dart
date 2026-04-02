@@ -44,4 +44,26 @@ void main() {
     expect(report.healthy, isFalse);
     expect(report.diagnostics, isEmpty);
   });
+
+  test('parses Error: severity diagnostic', () {
+    const output = 'Error: Something is seriously wrong.\nDetails here.\n';
+    final report = parser.parse(output);
+    expect(report.healthy, isFalse);
+    expect(report.diagnostics, hasLength(1));
+    expect(report.diagnostics[0].severity, DiagnosticSeverity.error);
+    expect(report.diagnostics[0].title, 'Something is seriously wrong.');
+    expect(report.diagnostics[0].details, contains('Details here.'));
+  });
+
+  test('parses multiple diagnostics of mixed severity', () {
+    const output = '''
+Warning: Some casks are deprecated.
+  cask1, cask2
+Error: Critical failure detected.
+''';
+    final report = parser.parse(output);
+    expect(report.diagnostics, hasLength(2));
+    expect(report.diagnostics[0].severity, DiagnosticSeverity.warning);
+    expect(report.diagnostics[1].severity, DiagnosticSeverity.error);
+  });
 }

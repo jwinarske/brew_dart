@@ -496,5 +496,663 @@ void main() {
       expect(result.satisfied, isFalse);
       expect(result.missingEntries, isNotEmpty);
     });
+
+    test('passes --file flag', () async {
+      fakeCli.whenRun(
+        'bundle check',
+        stdout: "The Brewfile's dependencies are satisfied.\n",
+      );
+      await brew.bundleCheck(file: '/tmp/Brewfile');
+      expect(fakeCli.executedCommands.last, [
+        'bundle',
+        'check',
+        '--file=/tmp/Brewfile',
+      ]);
+    });
+  });
+
+  // ── Default constructor & cli accessor ──
+
+  group('Brew default constructor', () {
+    test('creates BrewCli automatically when no cli arg provided', () {
+      final b = Brew();
+      expect(b.cli, isA<BrewCli>());
+    });
+
+    test('cli getter returns the underlying BrewCli', () {
+      expect(brew.cli, same(fakeCli));
+    });
+  });
+
+  // ── isInstalled exception paths ──
+
+  group('isInstalled exception paths', () {
+    test('returns false when BrewNotInstalledException is thrown', () async {
+      fakeCli.whenRunThrows('--version', const BrewNotInstalledException());
+      expect(await brew.isInstalled(), isFalse);
+    });
+
+    test('returns false when a generic Exception is thrown', () async {
+      fakeCli.whenRunThrows('--version', Exception('unexpected error'));
+      expect(await brew.isInstalled(), isFalse);
+    });
+  });
+
+  // ── Error paths for Phase 1 methods ──
+
+  group('config error', () {
+    test('throws BrewCommandException on failure', () async {
+      fakeCli.whenRunFails('config', stderr: 'brew config: error');
+      expect(() => brew.config(), throwsA(isA<BrewCommandException>()));
+    });
+  });
+
+  group('prefix error', () {
+    test('throws BrewCommandException on failure', () async {
+      fakeCli.whenRunFails('--prefix', stderr: 'not found');
+      expect(() => brew.prefix(), throwsA(isA<BrewCommandException>()));
+    });
+  });
+
+  group('cellarPath error', () {
+    test('throws BrewCommandException on failure', () async {
+      fakeCli.whenRunFails('--cellar', stderr: 'not found');
+      expect(() => brew.cellarPath(), throwsA(isA<BrewCommandException>()));
+    });
+  });
+
+  // ── outdated with flags ──
+
+  group('outdated with flags', () {
+    test('passes --cask flag', () async {
+      fakeCli.whenRun(
+        'outdated --cask --json=v2',
+        stdout: '{"formulae":[],"casks":[]}',
+      );
+      final result = await brew.outdated(cask: true);
+      expect(result, isEmpty);
+      expect(fakeCli.executedCommands.last, [
+        'outdated',
+        '--cask',
+        '--json=v2',
+      ]);
+    });
+
+    test('passes --greedy flag', () async {
+      fakeCli.whenRun(
+        'outdated --greedy --json=v2',
+        stdout: '{"formulae":[],"casks":[]}',
+      );
+      final result = await brew.outdated(greedy: true);
+      expect(result, isEmpty);
+      expect(fakeCli.executedCommands.last, [
+        'outdated',
+        '--greedy',
+        '--json=v2',
+      ]);
+    });
+
+    test('passes both --cask and --greedy flags', () async {
+      fakeCli.whenRun(
+        'outdated --cask --greedy --json=v2',
+        stdout: '{"formulae":[],"casks":[]}',
+      );
+      await brew.outdated(cask: true, greedy: true);
+      expect(fakeCli.executedCommands.last, contains('--cask'));
+    });
+  });
+
+  // ── search with flags and errors ──
+
+  group('search additional', () {
+    test('passes --cask flag when formulae=false', () async {
+      fakeCli.whenRun('search --cask docker', stdout: '==> Casks\ndocker\n');
+      final result = await brew.search('docker', formulae: false);
+      expect(fakeCli.executedCommands.last, contains('--cask'));
+      expect(result.casks, contains('docker'));
+    });
+
+    test('passes --formula flag when casks=false', () async {
+      fakeCli.whenRun('search --formula node', stdout: '==> Formulae\nnode\n');
+      final result = await brew.search('node', casks: false);
+      expect(fakeCli.executedCommands.last, contains('--formula'));
+      expect(result.formulae, contains('node'));
+    });
+
+    test('throws BrewCommandException on non-empty-result failure', () async {
+      fakeCli.whenRunFails('search badquery', stderr: 'Internal server error');
+      expect(
+        () => brew.search('badquery'),
+        throwsA(isA<BrewCommandException>()),
+      );
+    });
+  });
+
+  // ── install with extra flags ──
+
+  group('install extra flags', () {
+    test('passes --quiet flag', () async {
+      fakeCli.whenRun('install --quiet ripgrep', stdout: 'ok');
+      await brew.install('ripgrep', quiet: true);
+      expect(fakeCli.executedCommands.last, contains('--quiet'));
+    });
+
+    test('passes --verbose flag', () async {
+      fakeCli.whenRun('install --verbose ripgrep', stdout: 'ok');
+      await brew.install('ripgrep', verbose: true);
+      expect(fakeCli.executedCommands.last, contains('--verbose'));
+    });
+
+    test('passes extra options', () async {
+      fakeCli.whenRun('install --with-openssl ripgrep', stdout: 'ok');
+      await brew.install('ripgrep', options: ['--with-openssl']);
+      expect(fakeCli.executedCommands.last, contains('--with-openssl'));
+    });
+  });
+
+  // ── installAll parallel ──
+
+  group('installAll parallel', () {
+    test('parallel batch collects all results', () async {
+      fakeCli.whenRun('install a', stdout: 'ok');
+      fakeCli.whenRun('install b', stdout: 'ok');
+      fakeCli.whenRun('install c', stdout: 'ok');
+
+      final result = await brew.installAll(
+        ['a', 'b', 'c'],
+        parallel: true,
+        concurrency: 2,
+      );
+      expect(result.total, 3);
+      expect(result.succeeded, 3);
+    });
+
+    test('parallel batch calls onEach', () async {
+      fakeCli.whenRun('install x', stdout: 'ok');
+      fakeCli.whenRun('install y', stdout: 'ok');
+
+      final called = <String>[];
+      await brew.installAll(
+        ['x', 'y'],
+        parallel: true,
+        onEach: (pkg, _) => called.add(pkg),
+      );
+      expect(called, containsAll(['x', 'y']));
+    });
+  });
+
+  // ── upgradeAll ──
+
+  group('upgradeAll', () {
+    test('returns empty batch when nothing is outdated', () async {
+      fakeCli.whenRun(
+        'outdated --json=v2',
+        stdout: '{"formulae":[],"casks":[]}',
+      );
+      final result = await brew.upgradeAll();
+      expect(result.total, 0);
+      expect(result.succeeded, 0);
+      expect(result.elapsed, Duration.zero);
+    });
+
+    test('upgrades each outdated package', () async {
+      fakeCli.whenRun(
+        'outdated --json=v2',
+        stdout:
+            '{"formulae":[{"name":"node","installed_versions":["22.0.0"],"current_version":"22.0.0","latest_version":"22.1.0","pinned":false}],"casks":[]}',
+      );
+      fakeCli.whenRun('upgrade node', stdout: 'Upgrading node...');
+
+      final result = await brew.upgradeAll();
+      expect(result.total, 1);
+      expect(result.succeeded, 1);
+    });
+
+    test('reports failures', () async {
+      fakeCli.whenRun(
+        'outdated --json=v2',
+        stdout:
+            '{"formulae":[{"name":"node","installed_versions":["22.0.0"],"current_version":"22.0.0","latest_version":"22.1.0","pinned":false}],"casks":[]}',
+      );
+      fakeCli.whenRunFails('upgrade node', stderr: 'already up-to-date');
+
+      final result = await brew.upgradeAll();
+      expect(result.total, 1);
+      expect(result.failed, 1);
+    });
+
+    test('calls onEach for each upgraded package', () async {
+      fakeCli.whenRun(
+        'outdated --json=v2',
+        stdout:
+            '{"formulae":[{"name":"git","installed_versions":["2.48.0"],"current_version":"2.48.0","latest_version":"2.49.0","pinned":false}],"casks":[]}',
+      );
+      fakeCli.whenRun('upgrade git', stdout: 'ok');
+
+      final called = <String>[];
+      await brew.upgradeAll(onEach: (pkg, _) => called.add(pkg));
+      expect(called, contains('git'));
+    });
+
+    test('passes cask and greedy flags to outdated', () async {
+      fakeCli.whenRun(
+        'outdated --cask --greedy --json=v2',
+        stdout: '{"formulae":[],"casks":[]}',
+      );
+      await brew.upgradeAll(cask: true, greedy: true);
+      expect(
+        fakeCli.executedCommands.first,
+        containsAll(['outdated', '--cask', '--greedy', '--json=v2']),
+      );
+    });
+  });
+
+  // ── upgradeStream ──
+
+  group('upgradeStream', () {
+    test('yields output lines', () async {
+      fakeCli.whenRun(
+        'upgrade --cask firefox',
+        stdout: 'Upgrading firefox...\nDone.',
+      );
+      final lines = <String>[];
+      await for (final output in brew.upgradeStream('firefox', cask: true)) {
+        lines.add(output.line);
+      }
+      expect(lines, isNotEmpty);
+    });
+
+    test('without cask flag', () async {
+      fakeCli.whenRun('upgrade node', stdout: 'ok');
+      final lines = <String>[];
+      await for (final output in brew.upgradeStream('node')) {
+        lines.add(output.line);
+      }
+      expect(fakeCli.executedCommands.last, ['upgrade', 'node']);
+    });
+  });
+
+  // ── uninstallAll ──
+
+  group('uninstallAll', () {
+    test('uninstalls all packages', () async {
+      fakeCli.whenRun('uninstall a', stdout: 'Uninstalled a');
+      fakeCli.whenRun('uninstall b', stdout: 'Uninstalled b');
+
+      final result = await brew.uninstallAll(['a', 'b']);
+      expect(result.total, 2);
+      expect(result.succeeded, 2);
+      expect(result.failed, 0);
+    });
+
+    test('reports failed uninstalls', () async {
+      fakeCli.whenRun('uninstall a', stdout: 'ok');
+      fakeCli.whenRunFails('uninstall b', stderr: 'not installed');
+
+      final result = await brew.uninstallAll(['a', 'b']);
+      expect(result.total, 2);
+      expect(result.succeeded, 1);
+      expect(result.failed, 1);
+    });
+
+    test('calls onEach callback', () async {
+      fakeCli.whenRun('uninstall x', stdout: 'ok');
+
+      final called = <String>[];
+      await brew.uninstallAll(['x'], onEach: (pkg, _) => called.add(pkg));
+      expect(called, ['x']);
+    });
+
+    test('passes --cask flag', () async {
+      fakeCli.whenRun('uninstall --cask docker', stdout: 'ok');
+      await brew.uninstallAll(['docker'], cask: true);
+      expect(fakeCli.executedCommands.last, contains('--cask'));
+    });
+  });
+
+  // ── cleanup error ──
+
+  group('cleanup error', () {
+    test('returns failure result on error', () async {
+      fakeCli.whenRunFails('cleanup', stderr: 'disk error');
+      final result = await brew.cleanup();
+      expect(result.success, isFalse);
+      expect(result.errorMessage, contains('disk error'));
+    });
+
+    test('passes package name', () async {
+      fakeCli.whenRun('cleanup node', stdout: 'ok');
+      await brew.cleanup(package: 'node');
+      expect(fakeCli.executedCommands.last, contains('node'));
+    });
+  });
+
+  // ── upgrade error ──
+
+  group('upgrade error', () {
+    test('returns failure result without throwing', () async {
+      fakeCli.whenRunFails('upgrade node', stderr: 'already up-to-date');
+      final result = await brew.upgrade('node');
+      expect(result.success, isFalse);
+      expect(result.errorMessage, isNotNull);
+    });
+
+    test('passes --cask flag', () async {
+      fakeCli.whenRun('upgrade --cask docker', stdout: 'ok');
+      final result = await brew.upgrade('docker', cask: true);
+      expect(result.success, isTrue);
+      expect(fakeCli.executedCommands.last, contains('--cask'));
+    });
+  });
+
+  // ── listInstalled filter ──
+
+  group('listInstalled', () {
+    test('returns all when cask is null', () async {
+      final jsonStr = loadGoldenText('info_v2_installed.json');
+      fakeCli.whenRun('info --installed --json=v2', stdout: jsonStr);
+      final all = await brew.listInstalled();
+      expect(all, isNotEmpty);
+    });
+
+    test('filters to formulae only when cask=false', () async {
+      final jsonStr = loadGoldenText('info_v2_installed.json');
+      fakeCli.whenRun('info --installed --json=v2', stdout: jsonStr);
+      final formulae = await brew.listInstalled(cask: false);
+      expect(formulae.every((p) => p.isFormula), isTrue);
+    });
+
+    test('filters to casks only when cask=true', () async {
+      final jsonStr = loadGoldenText('info_v2_installed.json');
+      fakeCli.whenRun('info --installed --json=v2', stdout: jsonStr);
+      final casks = await brew.listInstalled(cask: true);
+      expect(casks.every((p) => p.isCask), isTrue);
+    });
+  });
+
+  // ── isPackageInstalled with cask ──
+
+  group('isPackageInstalled cask', () {
+    test('checks cask list', () async {
+      fakeCli.whenRun('list --cask -1', stdout: 'docker\n');
+      expect(await brew.isPackageInstalled('docker', cask: true), isTrue);
+    });
+  });
+
+  // ── listNames error ──
+
+  group('listNames error', () {
+    test('throws BrewCommandException on failure', () async {
+      fakeCli.whenRunFails('list -1', stderr: 'error');
+      expect(() => brew.listNames(), throwsA(isA<BrewCommandException>()));
+    });
+
+    test('list casks', () async {
+      fakeCli.whenRun('list --cask -1', stdout: 'docker\nfirefox\n');
+      final names = await brew.listNames(cask: true);
+      expect(names, containsAll(['docker', 'firefox']));
+    });
+  });
+
+  // ── deps flags and error ──
+
+  group('deps additional', () {
+    test('passes --tree flag', () async {
+      fakeCli.whenRun('deps --tree git', stdout: 'gettext\n  pcre2\n');
+      await brew.deps('git', tree: true);
+      expect(fakeCli.executedCommands.last, contains('--tree'));
+    });
+
+    test('passes --installed flag', () async {
+      fakeCli.whenRun('deps --installed git', stdout: 'gettext\n');
+      await brew.deps('git', installed: true);
+      expect(fakeCli.executedCommands.last, contains('--installed'));
+    });
+
+    test('passes includeAll flags', () async {
+      fakeCli.whenRun(
+        'deps --include-build --include-optional --include-test git',
+        stdout: '',
+      );
+      await brew.deps('git', includeAll: true);
+      expect(fakeCli.executedCommands.last, contains('--include-build'));
+    });
+
+    test('throws BrewCommandException on failure', () async {
+      fakeCli.whenRunFails('deps git', stderr: 'error');
+      expect(() => brew.deps('git'), throwsA(isA<BrewCommandException>()));
+    });
+  });
+
+  // ── uses flags and error ──
+
+  group('uses additional', () {
+    test('passes --recursive flag', () async {
+      fakeCli.whenRun('uses --installed --recursive node', stdout: 'yarn\n');
+      await brew.uses('node', recursive: true);
+      expect(fakeCli.executedCommands.last, contains('--recursive'));
+    });
+
+    test('without --installed flag', () async {
+      fakeCli.whenRun('uses node', stdout: '');
+      await brew.uses('node', installed: false);
+      expect(fakeCli.executedCommands.last, isNot(contains('--installed')));
+    });
+
+    test('throws BrewCommandException on failure', () async {
+      fakeCli.whenRunFails('uses node', stderr: 'error');
+      expect(
+        () => brew.uses('node', installed: false),
+        throwsA(isA<BrewCommandException>()),
+      );
+    });
+  });
+
+  // ── missing error ──
+
+  group('missing error', () {
+    test('throws BrewCommandException on failure', () async {
+      fakeCli.whenRunFails('missing', stderr: 'brew error');
+      expect(() => brew.missing(), throwsA(isA<BrewCommandException>()));
+    });
+
+    test('parses line without colon as formula with no deps', () async {
+      fakeCli.whenRun('missing', stdout: 'orphaned-formula\n');
+      final result = await brew.missing();
+      expect(result, hasLength(1));
+      expect(result[0].formula, 'orphaned-formula');
+      expect(result[0].missingDeps, isEmpty);
+    });
+  });
+
+  // ── taps error ──
+
+  group('taps error', () {
+    test('throws BrewCommandException on failure', () async {
+      fakeCli.whenRunFails('tap-info --json --installed', stderr: 'error');
+      expect(() => brew.taps(), throwsA(isA<BrewCommandException>()));
+    });
+  });
+
+  // ── tap with url and error ──
+
+  group('tap additional', () {
+    test('passes url argument', () async {
+      fakeCli.whenRun('tap custom/tap https://example.com/tap', stdout: '');
+      await brew.tap('custom/tap', url: 'https://example.com/tap');
+      expect(fakeCli.executedCommands.last, [
+        'tap',
+        'custom/tap',
+        'https://example.com/tap',
+      ]);
+    });
+
+    test('throws BrewCommandException on failure', () async {
+      fakeCli.whenRunFails('tap bad/tap', stderr: 'not found');
+      expect(() => brew.tap('bad/tap'), throwsA(isA<BrewCommandException>()));
+    });
+  });
+
+  // ── untap with force and error ──
+
+  group('untap additional', () {
+    test('passes --force flag', () async {
+      fakeCli.whenRun('untap --force homebrew/cask-fonts', stdout: '');
+      await brew.untap('homebrew/cask-fonts', force: true);
+      expect(fakeCli.executedCommands.last, contains('--force'));
+    });
+
+    test('throws BrewCommandException on failure', () async {
+      fakeCli.whenRunFails('untap homebrew/cask-fonts', stderr: 'not tapped');
+      expect(
+        () => brew.untap('homebrew/cask-fonts'),
+        throwsA(isA<BrewCommandException>()),
+      );
+    });
+  });
+
+  // ── update with force ──
+
+  group('update additional', () {
+    test('passes --force flag', () async {
+      fakeCli.whenRun('update --force', stdout: 'Updated.');
+      final result = await brew.update(force: true);
+      expect(result.success, isTrue);
+      expect(fakeCli.executedCommands.last, contains('--force'));
+    });
+
+    test('updateStream yields lines', () async {
+      fakeCli.whenRun('update', stdout: 'Fetching...\nUpdated.');
+      final lines = <String>[];
+      await for (final o in brew.updateStream()) {
+        lines.add(o.line);
+      }
+      expect(lines, isNotEmpty);
+    });
+
+    test('updateStream passes --force', () async {
+      fakeCli.whenRun('update --force', stdout: 'ok');
+      await for (final _ in brew.updateStream(force: true)) {}
+      expect(fakeCli.executedCommands.last, contains('--force'));
+    });
+  });
+
+  // ── link / unlink errors ──
+
+  group('link/unlink errors', () {
+    test('link throws on failure', () async {
+      fakeCli.whenRunFails('link openssl@3', stderr: 'conflict');
+      expect(
+        () => brew.link('openssl@3'),
+        throwsA(isA<BrewCommandException>()),
+      );
+    });
+
+    test('unlink throws on failure', () async {
+      fakeCli.whenRunFails('unlink openssl@3', stderr: 'error');
+      expect(
+        () => brew.unlink('openssl@3'),
+        throwsA(isA<BrewCommandException>()),
+      );
+    });
+  });
+
+  // ── pin / unpin / pinned errors ──
+
+  group('pin/unpin/pinned errors', () {
+    test('pin throws on failure', () async {
+      fakeCli.whenRunFails('pin node', stderr: 'error');
+      expect(() => brew.pin('node'), throwsA(isA<BrewCommandException>()));
+    });
+
+    test('unpin throws on failure', () async {
+      fakeCli.whenRunFails('unpin node', stderr: 'error');
+      expect(() => brew.unpin('node'), throwsA(isA<BrewCommandException>()));
+    });
+
+    test('pinned throws on failure', () async {
+      fakeCli.whenRunFails('list --pinned', stderr: 'error');
+      expect(() => brew.pinned(), throwsA(isA<BrewCommandException>()));
+    });
+  });
+
+  // ── services errors ──
+
+  group('services errors', () {
+    test('services() throws on failure', () async {
+      fakeCli.whenRunFails('services list', stderr: 'error');
+      expect(() => brew.services(), throwsA(isA<BrewCommandException>()));
+    });
+
+    test('startService throws on failure', () async {
+      fakeCli.whenRunFails('services start redis', stderr: 'error');
+      expect(
+        () => brew.startService('redis'),
+        throwsA(isA<BrewCommandException>()),
+      );
+    });
+
+    test('stopService throws on failure', () async {
+      fakeCli.whenRunFails('services stop redis', stderr: 'error');
+      expect(
+        () => brew.stopService('redis'),
+        throwsA(isA<BrewCommandException>()),
+      );
+    });
+
+    test('restartService throws on failure', () async {
+      fakeCli.whenRunFails('services restart redis', stderr: 'error');
+      expect(
+        () => brew.restartService('redis'),
+        throwsA(isA<BrewCommandException>()),
+      );
+    });
+  });
+
+  // ── bundleDump with file and error ──
+
+  group('bundleDump additional', () {
+    test('passes --file flag', () async {
+      fakeCli.whenRun('bundle dump', stdout: 'brew "git"\n');
+      await brew.bundleDump(file: '/tmp/Brewfile', force: true);
+      expect(fakeCli.executedCommands.last, contains('--file=/tmp/Brewfile'));
+      expect(fakeCli.executedCommands.last, contains('--force'));
+    });
+
+    test('throws BrewCommandException on failure', () async {
+      fakeCli.whenRunFails('bundle dump', stderr: 'error');
+      expect(() => brew.bundleDump(), throwsA(isA<BrewCommandException>()));
+    });
+  });
+
+  // ── bundle with options and error ──
+
+  group('bundle additional', () {
+    test('passes --file and --verbose flags', () async {
+      fakeCli.whenRun('bundle', stdout: 'ok');
+      await brew.bundle(file: '/tmp/Brewfile', verbose: true);
+      expect(fakeCli.executedCommands.last, contains('--file=/tmp/Brewfile'));
+      expect(fakeCli.executedCommands.last, contains('--verbose'));
+    });
+
+    test('returns failure result on error', () async {
+      fakeCli.whenRunFails('bundle', stderr: 'install failed');
+      final result = await brew.bundle();
+      expect(result.success, isFalse);
+      expect(result.errorMessage, isNotNull);
+    });
+  });
+
+  // ── uninstall with cask+force ──
+
+  group('uninstall additional', () {
+    test('passes --cask and --force flags', () async {
+      fakeCli.whenRun('uninstall --cask --force docker', stdout: 'ok');
+      await brew.uninstall('docker', cask: true, force: true);
+      expect(
+        fakeCli.executedCommands.last,
+        containsAll(['--cask', '--force', 'docker']),
+      );
+    });
   });
 }

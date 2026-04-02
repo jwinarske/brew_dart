@@ -11,6 +11,9 @@ class FakeBrewCli extends BrewCli {
   /// The key is matched against the args list joined by spaces.
   final Map<String, BrewProcessResult> responses = {};
 
+  /// Map of command patterns that should throw the given exception.
+  final Map<String, Exception> _throwingPatterns = {};
+
   /// All commands that were executed, for verification.
   final List<List<String>> executedCommands = [];
 
@@ -52,6 +55,13 @@ class FakeBrewCli extends BrewCli {
     );
   }
 
+  /// Register a pattern that should throw [exception] when matched.
+  ///
+  /// Defaults to [BrewNotInstalledException] if no exception is provided.
+  void whenRunThrows(String pattern, [Exception? exception]) {
+    _throwingPatterns[pattern] = exception ?? const BrewNotInstalledException();
+  }
+
   @override
   Future<BrewProcessResult> run(
     List<String> args, {
@@ -60,6 +70,15 @@ class FakeBrewCli extends BrewCli {
   }) async {
     executedCommands.add(args);
     final key = args.join(' ');
+
+    // Check for patterns that should throw
+    for (final entry in _throwingPatterns.entries) {
+      if (key == entry.key ||
+          key.startsWith(entry.key) ||
+          key.contains(entry.key)) {
+        throw entry.value;
+      }
+    }
 
     // Try exact match first, then prefix matches
     if (responses.containsKey(key)) {

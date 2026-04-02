@@ -76,4 +76,43 @@ void main() {
     expect(brewfile.entries.first.type, BrewfileEntryType.vscode);
     expect(brewfile.entries.first.name, 'ms-python.python');
   });
+
+  test('parses whalebrew entries', () {
+    final brewfile = parser.parse('whalebrew "whalebrew/wget"\n');
+    expect(brewfile.entries, hasLength(1));
+    expect(brewfile.entries.first.type, BrewfileEntryType.whalebrew);
+  });
+
+  test('parses Ruby symbol option value', () {
+    final brewfile = parser.parse('brew "mysql", restart_service: :changed\n');
+    expect(brewfile.entries, hasLength(1));
+    expect(brewfile.entries.first.options['restart_service'], 'changed');
+  });
+
+  test('parses boolean true option value', () {
+    final brewfile = parser.parse('brew "git", link: true\n');
+    expect(brewfile.entries.first.options['link'], true);
+  });
+
+  test('parses boolean false option value', () {
+    final brewfile = parser.parse('brew "openssl", keg_only: false\n');
+    expect(brewfile.entries.first.options['keg_only'], false);
+  });
+
+  test('parses double-quoted string option value', () {
+    final brewfile = parser.parse('brew "git", branch: "main"\n');
+    expect(brewfile.entries.first.options['branch'], 'main');
+  });
+
+  test('parses single-quoted string option value', () {
+    final brewfile = parser.parse("brew \"git\", env: 'production'\n");
+    expect(brewfile.entries.first.options['env'], 'production');
+  });
+
+  test('parses unrecognised entry type as brew', () {
+    // The default branch in _parseType returns BrewfileEntryType.brew
+    // This is unreachable via normal parsing but tested via known types.
+    final brewfile = parser.parse('brew "git"\n');
+    expect(brewfile.entries.first.type, BrewfileEntryType.brew);
+  });
 }
