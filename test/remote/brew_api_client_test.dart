@@ -140,5 +140,96 @@ void main() {
         'https://formulae.brew.sh/api/formula.json',
       );
     });
+
+    test(
+      'installAnalytics falls back to formulae key when items is absent',
+      () async {
+        final client = BrewApiClient(
+          httpGet: (_) async => jsonEncode({
+            'category': 'install',
+            'total_items': 1,
+            'start_date': '2026-01-01',
+            'end_date': '2026-01-31',
+            'total_count': 100,
+            // No "items" key — should fall back to "formulae"
+            'formulae': [
+              {'git': 75},
+            ],
+          }),
+        );
+
+        final analytics = await client.installAnalytics(days: 90);
+        expect(analytics.items['git'], 75);
+      },
+    );
+
+    test('installAnalytics handles string count values', () async {
+      final client = BrewApiClient(
+        httpGet: (_) async => jsonEncode({
+          'category': 'install',
+          'total_items': 1,
+          'start_date': '2026-01-01',
+          'end_date': '2026-01-31',
+          'total_count': 200,
+          'items': [
+            {'node': '150'}, // value is a String, not int
+          ],
+        }),
+      );
+
+      final analytics = await client.installAnalytics();
+      expect(analytics.items['node'], 150);
+    });
+
+    test('installAnalytics uses different day ranges', () async {
+      Uri? captured;
+      final client = BrewApiClient(
+        httpGet: (url) async {
+          captured = url;
+          return jsonEncode({
+            'category': 'install',
+            'total_items': 0,
+            'start_date': '2026-01-01',
+            'end_date': '2026-04-01',
+            'total_count': 0,
+            'items': <dynamic>[],
+          });
+        },
+      );
+
+      await client.installAnalytics(days: 90);
+      expect(captured.toString(), contains('90d.json'));
+    });
+
+    test('installAnalytics handles empty items list', () async {
+      final client = BrewApiClient(
+        httpGet: (_) async => jsonEncode({
+          'category': 'install',
+          'total_items': 0,
+          'start_date': '2026-01-01',
+          'end_date': '2026-01-31',
+          'total_count': 0,
+          // Neither "items" nor "formulae" key
+        }),
+      );
+
+      final analytics = await client.installAnalytics();
+      expect(analytics.items, isEmpty);
+    });
+
+    test('CaskDetail with optional fields populated', () {
+      final detail = CaskDetail.fromJson({
+        'token': 'firefox',
+        'desc': 'Web browser',
+        'homepage': 'https://firefox.com',
+        'version': '130.0',
+        'deprecated': false,
+        'disabled': false,
+        'depends_on': {'macos': '>=12'},
+        'auto_updates': true,
+      });
+      expect(detail.dependsOn, isNotNull);
+      expect(detail.autoUpdates, isTrue);
+    });
   });
 }
