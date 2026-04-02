@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-04-02
+
+### Fixed
+
+- **pub.dev static analysis**: committed generated `*.freezed.dart` and `*.g.dart` files so pub.dev's analyzer can resolve types without running `build_runner`. Updated `.gitignore` to only exclude generated files under `example/`, not `lib/`.
+
+### Changed
+
+- **`pubspec.yaml` description** shortened to 154 characters (within the 60–180 pub point limit) to achieve a perfect **160/160 pub points** score.
+- **`analysis_options.yaml`** updated to use `package:lints/recommended.yaml` (was `package:lints/core.yaml`).
+
+### Docs
+
+- Added Flutter example app screenshot (`doc/flutter_example_01.png`) to README.
+
 ## [0.2.0] - 2026-04-01
 
 ### Changed

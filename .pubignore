@@ -29,6 +29,3 @@ test/integration/
 .idea/
 .vscode/
 
-# Generated files (consumers run build_runner themselves)
-*.g.dart
-*.freezed.dart
