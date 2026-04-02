@@ -1,4 +1,3 @@
-import 'package:brew_dart/brew_dart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -108,12 +107,24 @@ class OperationsNotifier extends StateNotifier<List<BrewOperation>> {
     }
   }
 
+  /// Unpin a package.
+  Future<void> unpin(String name) async {
+    final connState = await _ref.read(brewConnectionProvider.future);
+    final brew = getBrewOrThrow(connState);
+    await brew.unpin(name);
+    _ref.invalidate(pinnedPackagesProvider);
+  }
+
   /// Clear completed/failed operations.
   void clearFinished() {
-    state = state
-        .where(
-            (op) => op.status == OperationStatus.running || op.status == OperationStatus.pending)
-        .toList();
+    state =
+        state
+            .where(
+              (op) =>
+                  op.status == OperationStatus.running ||
+                  op.status == OperationStatus.pending,
+            )
+            .toList();
   }
 
   void _updateOp(
@@ -138,8 +149,8 @@ class OperationsNotifier extends StateNotifier<List<BrewOperation>> {
 
 final operationsProvider =
     StateNotifierProvider<OperationsNotifier, List<BrewOperation>>(
-  (ref) => OperationsNotifier(ref),
-);
+      (ref) => OperationsNotifier(ref),
+    );
 
 /// Active (running) operations.
 final activeOperationsProvider = Provider<List<BrewOperation>>((ref) {

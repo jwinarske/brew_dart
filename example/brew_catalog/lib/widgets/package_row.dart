@@ -35,9 +35,10 @@ class PackageRow extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        color: isSelected
-            ? colorScheme.primaryContainer.withValues(alpha: 0.3)
-            : null,
+        color:
+            isSelected
+                ? colorScheme.primaryContainer.withValues(alpha: 0.3)
+                : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,

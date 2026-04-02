@@ -5,11 +5,7 @@ class DependencyChips extends StatelessWidget {
   final List<String> deps;
   final ValueChanged<String>? onTap;
 
-  const DependencyChips({
-    super.key,
-    required this.deps,
-    this.onTap,
-  });
+  const DependencyChips({super.key, required this.deps, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -17,22 +13,23 @@ class DependencyChips extends StatelessWidget {
       return Text(
         'No dependencies',
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
       );
     }
 
     return Wrap(
       spacing: 8,
       runSpacing: 4,
-      children: deps.map((dep) {
-        return ActionChip(
-          label: Text(dep),
-          labelStyle: Theme.of(context).textTheme.labelSmall,
-          visualDensity: VisualDensity.compact,
-          onPressed: onTap != null ? () => onTap!(dep) : null,
-        );
-      }).toList(),
+      children:
+          deps.map((dep) {
+            return ActionChip(
+              label: Text(dep),
+              labelStyle: Theme.of(context).textTheme.labelSmall,
+              visualDensity: VisualDensity.compact,
+              onPressed: onTap != null ? () => onTap!(dep) : null,
+            );
+          }).toList(),
     );
   }
 }

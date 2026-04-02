@@ -18809,5 +18809,57 @@
       }
     }
   ],
-  "casks": []
+  "casks": [
+    {
+      "token": "docker-desktop",
+      "full_token": "docker-desktop",
+      "old_tokens": [
+        "docker"
+      ],
+      "tap": "homebrew/cask",
+      "name": [
+        "Docker Desktop"
+      ],
+      "desc": "App to build and share containerised applications and microservices",
+      "homepage": "https://www.docker.com/products/docker-desktop",
+      "url": "https://desktop.docker.com/mac/main/arm64/222858/Docker.dmg",
+      "url_specs": {},
+      "version": "4.67.0,222858",
+      "autobump": true,
+      "no_autobump_message": null,
+      "skip_livecheck": false,
+      "installed": "4.66.0,221924",
+      "installed_time": 1743000000,
+      "bundle_version": null,
+      "bundle_short_version": null,
+      "outdated": false,
+      "sha256": "abc123",
+      "artifacts": [],
+      "caveats": null,
+      "caveats_rosetta": null,
+      "depends_on": {},
+      "conflicts_with": null,
+      "container": null,
+      "rename": [],
+      "auto_updates": true,
+      "deprecated": false,
+      "deprecation_date": null,
+      "deprecation_reason": null,
+      "deprecation_replacement_formula": null,
+      "deprecation_replacement_cask": null,
+      "deprecate_args": null,
+      "disabled": false,
+      "disable_date": null,
+      "disable_reason": null,
+      "disable_replacement_formula": null,
+      "disable_replacement_cask": null,
+      "disable_args": null,
+      "tap_git_head": "abc",
+      "languages": [],
+      "ruby_source_path": "Casks/d/docker-desktop.rb",
+      "ruby_source_checksum": {
+        "sha256": "abc"
+      }
+    }
+  ]
 }

@@ -85,8 +85,11 @@
         }
       },
       "pour_bottle_only_if": null,
-      "keg_only": false,
-      "keg_only_reason": null,
+      "keg_only": true,
+      "keg_only_reason": {
+        "reason": "macOS already provides this software.",
+        "explanation": ""
+      },
       "options": [],
       "build_dependencies": [],
       "dependencies": [

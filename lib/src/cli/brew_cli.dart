@@ -32,12 +32,39 @@ class BrewCli {
   BrewCli({this.brewPath, Map<String, String>? defaultEnv})
     : _extraDefaultEnv = defaultEnv ?? const {};
 
+  /// Known Homebrew install locations, in priority order.
+  static const _knownPaths = <String>[
+    '/opt/homebrew/bin/brew', // Apple Silicon (default since Homebrew 3)
+    '/usr/local/bin/brew', // Intel Macs
+    '/home/linuxbrew/.linuxbrew/bin/brew', // Linuxbrew
+  ];
+
+  /// Resolves the brew executable path.
+  ///
+  /// Tries [brewPath] first (if set), then each entry in [_knownPaths], then
+  /// falls back to a bare `brew` (relies on PATH — works in terminal contexts).
+  static Future<String> resolveBrewPath() async {
+    for (final path in _knownPaths) {
+      if (await File(path).exists()) return path;
+    }
+    return 'brew';
+  }
+
   /// The resolved executable path for brew.
   String get _executable => brewPath ?? 'brew';
 
   /// Build the merged environment for a process invocation.
+  ///
+  /// Starts from [Platform.environment] so the subprocess inherits `HOME`,
+  /// `USER`, `TMPDIR`, `DYLD_*`, etc., then overlays the brew-specific
+  /// defaults and any caller-supplied extras.
   Map<String, String> _buildEnv([Map<String, String>? extraEnv]) {
-    return {..._defaultEnv, ..._extraDefaultEnv, ...?extraEnv};
+    return {
+      ...Platform.environment,
+      ..._defaultEnv,
+      ..._extraDefaultEnv,
+      ...?extraEnv,
+    };
   }
 
   /// Run a brew command and wait for completion.

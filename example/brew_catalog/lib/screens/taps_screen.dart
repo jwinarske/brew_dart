@@ -29,25 +29,23 @@ class _TapsScreenState extends ConsumerState<TapsScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.all(12),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text('Taps', style: theme.textTheme.titleMedium),
-              const Spacer(),
-              SizedBox(
-                width: 250,
-                child: TextField(
-                  controller: _tapController,
-                  decoration: InputDecoration(
-                    hintText: 'user/repo',
-                    isDense: true,
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.add, size: 18),
-                      onPressed: _addTap,
-                    ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _tapController,
+                decoration: InputDecoration(
+                  hintText: 'user/repo',
+                  isDense: true,
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.add, size: 18),
+                    onPressed: _addTap,
                   ),
-                  onSubmitted: (_) => _addTap(),
                 ),
+                onSubmitted: (_) => _addTap(),
               ),
             ],
           ),
@@ -76,12 +74,13 @@ class _TapsScreenState extends ConsumerState<TapsScreen> {
                       '${tap.formulaCount ?? 0} formulae, '
                       '${tap.caskCount ?? 0} casks',
                     ),
-                    trailing: tap.official != true
-                        ? IconButton(
-                            icon: const Icon(Icons.remove_circle_outline),
-                            onPressed: () => _removeTap(tap.name),
-                          )
-                        : null,
+                    trailing:
+                        tap.official != true
+                            ? IconButton(
+                              icon: const Icon(Icons.remove_circle_outline),
+                              onPressed: () => _removeTap(tap.name),
+                            )
+                            : null,
                   );
                 },
               );
@@ -105,9 +104,9 @@ class _TapsScreenState extends ConsumerState<TapsScreen> {
       ref.invalidate(tapsProvider);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add tap: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to add tap: $e')));
       }
     }
   }
@@ -115,20 +114,21 @@ class _TapsScreenState extends ConsumerState<TapsScreen> {
   Future<void> _removeTap(String name) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Remove Tap'),
-        content: Text('Remove $name?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Remove Tap'),
+            content: Text('Remove $name?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Remove'),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Remove'),
-          ),
-        ],
-      ),
     );
     if (confirmed != true) return;
 
@@ -140,9 +140,9 @@ class _TapsScreenState extends ConsumerState<TapsScreen> {
       ref.invalidate(tapsProvider);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to remove tap: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to remove tap: $e')));
       }
     }
   }

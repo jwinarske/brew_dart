@@ -21,12 +21,16 @@ class InstalledScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              Text(
-                'Installed Packages',
-                style: Theme.of(context).textTheme.titleMedium,
+              Flexible(
+                child: Text(
+                  'Installed Packages',
+                  style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              const Spacer(),
-              installed.whenData((list) => Text('${list.length} packages'))
+              const SizedBox(width: 8),
+              installed
+                      .whenData((list) => Text('${list.length} packages'))
                       .valueOrNull ??
                   const SizedBox.shrink(),
             ],
@@ -42,26 +46,28 @@ class InstalledScreen extends ConsumerWidget {
                 return const Center(child: Text('No packages installed.'));
               }
               final outdated = outdatedNames.valueOrNull ?? {};
-              final items = packages.map((pkg) {
-                return PackageListItem(
-                  name: pkg.name,
-                  version: pkg.installedVersion,
-                  description: pkg.isFormula
-                      ? (pkg.formula?.desc ?? '')
-                      : (pkg.cask?.desc ?? ''),
-                  isInstalled: true,
-                  hasUpdate: outdated.contains(pkg.name),
-                  isCask: pkg.isCask,
-                );
-              }).toList()
-                ..sort((a, b) => a.name.compareTo(b.name));
+              final items =
+                  packages.map((pkg) {
+                      return PackageListItem(
+                        name: pkg.name,
+                        version: pkg.installedVersion,
+                        description:
+                            pkg.isFormula
+                                ? (pkg.formula?.desc ?? '')
+                                : (pkg.cask?.desc ?? ''),
+                        isInstalled: true,
+                        hasUpdate: outdated.contains(pkg.name),
+                        isCask: pkg.isCask,
+                      );
+                    }).toList()
+                    ..sort((a, b) => a.name.compareTo(b.name));
 
               return PackageList(
                 packages: items,
                 selectedName: selectedPkg,
-                onSelect: (name) => ref
-                    .read(selectedPackageProvider.notifier)
-                    .state = name,
+                onSelect:
+                    (name) =>
+                        ref.read(selectedPackageProvider.notifier).state = name,
               );
             },
           ),

@@ -4,6 +4,7 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
+    - "example/brew_catalog/**"
   errors:
     invalid_annotation_target: ignore
   language:

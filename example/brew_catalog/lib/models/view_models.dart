@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// A simplified package item for display in lists.
 class PackageListItem {
   final String name;
@@ -82,8 +80,7 @@ class BrewOperation {
   int get hashCode => id.hashCode;
 
   @override
-  String toString() =>
-      'BrewOperation($package, ${type.label}, ${status.name})';
+  String toString() => 'BrewOperation($package, ${type.label}, ${status.name})';
 }
 
 /// Connection state for the Brew instance.

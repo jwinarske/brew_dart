@@ -22,15 +22,22 @@ class OutdatedScreen extends ConsumerWidget {
               Text('Outdated Packages', style: theme.textTheme.titleMedium),
               const Spacer(),
               outdated.whenOrNull(
-                    data: (list) => list.isNotEmpty
-                        ? FilledButton.icon(
-                            onPressed: () => ref
-                                .read(operationsProvider.notifier)
-                                .upgradeAll(),
-                            icon: const Icon(Icons.system_update_alt, size: 18),
-                            label: const Text('Upgrade All'),
-                          )
-                        : null,
+                    data:
+                        (list) =>
+                            list.isNotEmpty
+                                ? FilledButton.icon(
+                                  onPressed:
+                                      () =>
+                                          ref
+                                              .read(operationsProvider.notifier)
+                                              .upgradeAll(),
+                                  icon: const Icon(
+                                    Icons.system_update_alt,
+                                    size: 18,
+                                  ),
+                                  label: const Text('Upgrade All'),
+                                )
+                                : null,
                   ) ??
                   const SizedBox.shrink(),
             ],
@@ -43,9 +50,7 @@ class OutdatedScreen extends ConsumerWidget {
             error: (err, _) => Center(child: Text('Error: $err')),
             data: (packages) {
               if (packages.isEmpty) {
-                return const Center(
-                  child: Text('Everything is up to date!'),
-                );
+                return const Center(child: Text('Everything is up to date!'));
               }
               return ListView.builder(
                 itemCount: packages.length,
@@ -61,28 +66,30 @@ class OutdatedScreen extends ConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (pkg.pinned)
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 8),
                             child: Chip(
-                              label: const Text('Pinned'),
+                              label: Text('Pinned'),
                               visualDensity: VisualDensity.compact,
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
                             ),
                           ),
                         OutlinedButton(
-                          onPressed: pkg.pinned
-                              ? null
-                              : () => ref
-                                  .read(operationsProvider.notifier)
-                                  .upgrade(pkg.name, cask: pkg.isCask),
+                          onPressed:
+                              pkg.pinned
+                                  ? null
+                                  : () => ref
+                                      .read(operationsProvider.notifier)
+                                      .upgrade(pkg.name, cask: pkg.isCask),
                           child: const Text('Upgrade'),
                         ),
                       ],
                     ),
-                    onTap: () => ref
-                        .read(selectedPackageProvider.notifier)
-                        .state = pkg.name,
+                    onTap:
+                        () =>
+                            ref.read(selectedPackageProvider.notifier).state =
+                                pkg.name,
                   );
                 },
               );

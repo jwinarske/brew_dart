@@ -57,21 +57,21 @@ class ServicesScreen extends ConsumerWidget {
                           IconButton(
                             icon: const Icon(Icons.stop),
                             tooltip: 'Stop',
-                            onPressed: () =>
-                                _serviceAction(ref, svc.name, 'stop'),
+                            onPressed:
+                                () => _serviceAction(ref, svc.name, 'stop'),
                           )
                         else
                           IconButton(
                             icon: const Icon(Icons.play_arrow),
                             tooltip: 'Start',
-                            onPressed: () =>
-                                _serviceAction(ref, svc.name, 'start'),
+                            onPressed:
+                                () => _serviceAction(ref, svc.name, 'start'),
                           ),
                         IconButton(
                           icon: const Icon(Icons.restart_alt),
                           tooltip: 'Restart',
-                          onPressed: () =>
-                              _serviceAction(ref, svc.name, 'restart'),
+                          onPressed:
+                              () => _serviceAction(ref, svc.name, 'restart'),
                         ),
                       ],
                     ),
@@ -87,9 +87,17 @@ class ServicesScreen extends ConsumerWidget {
 
   Widget _statusIcon(ServiceStatus status) {
     return switch (status) {
-      ServiceStatus.started => const Icon(Icons.circle, color: AppColors.installed, size: 12),
+      ServiceStatus.started => const Icon(
+        Icons.circle,
+        color: AppColors.installed,
+        size: 12,
+      ),
       ServiceStatus.stopped => const Icon(Icons.circle_outlined, size: 12),
-      ServiceStatus.error => const Icon(Icons.error, color: AppColors.error, size: 12),
+      ServiceStatus.error => const Icon(
+        Icons.error,
+        color: AppColors.error,
+        size: 12,
+      ),
       _ => const Icon(Icons.help_outline, size: 12),
     };
   }

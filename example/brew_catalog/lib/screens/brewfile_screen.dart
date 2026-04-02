@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/brew_provider.dart';
-import '../providers/packages_provider.dart';
 
 class BrewfileScreen extends ConsumerStatefulWidget {
   const BrewfileScreen({super.key});
@@ -26,20 +23,29 @@ class _BrewfileScreenState extends ConsumerState<BrewfileScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.all(12),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text('Brewfile', style: theme.textTheme.titleMedium),
-              const Spacer(),
-              OutlinedButton.icon(
-                onPressed: _isLoading ? null : _dumpBrewfile,
-                icon: const Icon(Icons.download, size: 18),
-                label: const Text('Export'),
-              ),
-              const SizedBox(width: 8),
-              FilledButton.icon(
-                onPressed: _isLoading ? null : _checkBrewfile,
-                icon: const Icon(Icons.check_circle_outline, size: 18),
-                label: const Text('Check'),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: _isLoading ? null : _dumpBrewfile,
+                      icon: const Icon(Icons.download, size: 18),
+                      label: const Text('Export'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: _isLoading ? null : _checkBrewfile,
+                      icon: const Icon(Icons.check_circle_outline, size: 18),
+                      label: const Text('Check'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -50,53 +56,54 @@ class _BrewfileScreenState extends ConsumerState<BrewfileScreen> {
         else
           const SizedBox(height: 4),
         Expanded(
-          child: _brewfileContent != null
-              ? SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (_checkOutput != null) ...[
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerHighest,
-                            borderRadius: BorderRadius.circular(8),
+          child:
+              _brewfileContent != null
+                  ? SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (_checkOutput != null) ...[
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              _checkOutput!,
+                              style: theme.textTheme.bodySmall,
+                            ),
                           ),
-                          child: Text(
-                            _checkOutput!,
-                            style: theme.textTheme.bodySmall,
+                          const SizedBox(height: 16),
+                        ],
+                        SelectableText(
+                          _brewfileContent!,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontFamily: 'monospace',
                           ),
+                        ),
+                      ],
+                    ),
+                  )
+                  : Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.description_outlined,
+                          size: 48,
+                          color: theme.colorScheme.outline,
                         ),
                         const SizedBox(height: 16),
-                      ],
-                      SelectableText(
-                        _brewfileContent!,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontFamily: 'monospace',
+                        Text(
+                          'Export your Brewfile or check its status.',
+                          style: theme.textTheme.bodyLarge,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                )
-              : Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.description_outlined,
-                        size: 48,
-                        color: theme.colorScheme.outline,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Export your Brewfile or check its status.',
-                        style: theme.textTheme.bodyLarge,
-                      ),
-                    ],
-                  ),
-                ),
         ),
       ],
     );
@@ -114,9 +121,9 @@ class _BrewfileScreenState extends ConsumerState<BrewfileScreen> {
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Export failed: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Export failed: $e')));
       }
     } finally {
       setState(() => _isLoading = false);
@@ -130,15 +137,16 @@ class _BrewfileScreenState extends ConsumerState<BrewfileScreen> {
       final brew = getBrewOrThrow(connState);
       final result = await brew.bundleCheck();
       setState(() {
-        _checkOutput = result.satisfied
-            ? 'All Brewfile dependencies are satisfied.'
-            : 'Missing entries:\n${result.missingEntries.join('\n')}';
+        _checkOutput =
+            result.satisfied
+                ? 'All Brewfile dependencies are satisfied.'
+                : 'Missing entries:\n${result.missingEntries.join('\n')}';
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Check failed: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Check failed: $e')));
       }
     } finally {
       setState(() => _isLoading = false);

@@ -30,7 +30,7 @@ void main() {
     final result = parser.parse(output);
 
     expect(result.casks, isNotEmpty);
-    expect(result.casks, contains('docker'));
+    expect(result.casks, contains('docker-desktop'));
   });
 
   test('handles empty output', () {

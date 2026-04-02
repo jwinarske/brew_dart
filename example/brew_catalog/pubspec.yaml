@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   brew_dart:
-    path: ..
+    path: ../..
   collection: ^1.18.0
   flutter:
     sdk: flutter
