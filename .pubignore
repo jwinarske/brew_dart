@@ -12,6 +12,13 @@ brew_catalog/
 # CI and scripts
 .github/
 scripts/
+codecov.yml
+
+# Coverage data
+coverage/
+coverage_fresh/
+coverage_new/
+coverage_final/
 
 # Test fixtures (large golden files)
 test/parsers/golden/
